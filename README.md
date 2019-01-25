@@ -5,3 +5,7 @@
 # Introduction
 
 This is a software archtecture lib, with common solutions used by my apps.
+
+# Mediators
+
+## EnvironmentMediator

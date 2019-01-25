@@ -1,13 +1,12 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "outDir": "./dist/",
-    "outFile": "index.js",
+    "outFile": "./dist/index.js",
     "noImplicitAny": true,
     "strictNullChecks": true,
     "sourceMap": true,
     "declaration": true,
-    "module": "commonjs",
+    "module": "amd",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
