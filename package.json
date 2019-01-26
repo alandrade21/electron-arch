@@ -3,13 +3,13 @@
   "version": "0.0.1",
   "description": "Lib with common code used by electron projects.",
   "homepage": "https://github.com/alandrade21/electron-arch",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "author": "André Andrade <alandrade21@gmail.com> (https://github.com/alandrade21)",
   "license": "AGPL-3.0",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/alandrade21/electron-arch.git"
+    "type": "git",
+    "url": "https://github.com/alandrade21/electron-arch.git"
   },
   "keywords": [
     "archtecture",
