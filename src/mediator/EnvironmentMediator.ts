@@ -1,3 +1,5 @@
+import * as os from 'os';
+
 /**
  * Class to verify if the app is runnin in development environment.
  *
@@ -24,6 +26,20 @@ class EnvironmentMediator {
 
   public isDev(): boolean {
     return this.env === 'dev';
+  }
+
+  public printEnvironment(): void {
+    console.log('dirname:', __dirname);
+    console.log(`Current directory: ${process.cwd()}`);
+    console.log(`This platform is ${process.platform}`);
+    console.log(`Exec path is ${process.execPath}`);
+    if (process.mainModule) {
+      console.log(`Main module file is ${process.mainModule.filename}`);
+    }
+    console.log(`ELECTRON_DEV is ${process.env.ELECTRON_ENV}`);
+    console.log('os homedir:', os.homedir());
+    console.log('os platform:', os.platform());
+    console.log('os userinfo:', os.userInfo());
   }
 }
 
