@@ -1,4 +1,6 @@
 import * as os from 'os';
+import { app } from 'electron';
+import * as configStorage from 'electron-json-storage';
 
 /**
  * Class to verify if the app is runnin in development environment.
@@ -17,7 +19,7 @@ import * as os from 'os';
  * So, please, be carefull with this and, case you have a "production" version installed, do a
  * backup before start development, just in case. ;)
  */
-class EnvironmentMediator {
+class EnvironmentDetector {
   private env: string | undefined;
 
   constructor() {
@@ -28,19 +30,27 @@ class EnvironmentMediator {
     return this.env === 'dev';
   }
 
+  /**
+   * Method to print various system variables.
+   */
   public printEnvironment(): void {
-    console.log('dirname:', __dirname);
-    console.log(`Current directory: ${process.cwd()}`);
-    console.log(`This platform is ${process.platform}`);
-    console.log(`Exec path is ${process.execPath}`);
+    console.log('dirname: ', __dirname);
+    console.log(`process.cwd(): ${process.cwd()}`);
+    console.log(`process.platform ${process.platform}`);
+    console.log(`process.execPath ${process.execPath}`);
     if (process.mainModule) {
-      console.log(`Main module file is ${process.mainModule.filename}`);
+      console.log(`process.mainModule.filename ${process.mainModule.filename}`);
     }
-    console.log(`ELECTRON_DEV is ${process.env.ELECTRON_ENV}`);
-    console.log('os homedir:', os.homedir());
-    console.log('os platform:', os.platform());
-    console.log('os userinfo:', os.userInfo());
+    console.log(`process.env.ELECTRON_ENV ${process.env.ELECTRON_ENV}`);
+    console.log('os.homedir: ', os.homedir());
+    console.log('os.platform: ', os.platform());
+    console.log('os.userInfo:', os.userInfo());
+    console.log('electron.app.getPath("home") ', app.getPath('home'));
+    console.log('electron.app.getPath("appData") ', app.getPath('appData'));
+    console.log('electron.app.getPath("userData") ', app.getPath('userData'));
+    console.log('configStorage.getDefaultDataPath() ', configStorage.getDefaultDataPath());
+    console.log('configStorage.getDataPath() ', configStorage.getDataPath());
   }
 }
 
-export const envMediator: EnvironmentMediator = new EnvironmentMediator();
+export const envDetector: EnvironmentDetector = new EnvironmentDetector();
