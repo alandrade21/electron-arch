@@ -17,6 +17,8 @@ export abstract class AppConfigurator {
    */
   protected configFileName: string;
 
+
+
   /**
    * Verifies which is the user's OS, and detects the user's home folder accordingly.
    *
@@ -78,8 +80,22 @@ export abstract class AppConfigurator {
     });
   }
 
-  protected readConfigFile(): ConfigData | ConfiguratorError {
+  protected readConfigFile(): void | ConfiguratorError {
+    configStorage.get(this.configFileName, (error: any, data: ConfigData) => {
+      if (error) {
+        let msg = 'An error occurred when reading the config file.';
 
+        if (error instanceof Error) {
+          msg += ' Original message: ' + error.message;
+        }
+
+        console.log(msg, error);
+        
+        return new ConfiguratorError(msg, error);
+      }
+
+
+    })
   }
 
   protected createConfigFile(): void {
