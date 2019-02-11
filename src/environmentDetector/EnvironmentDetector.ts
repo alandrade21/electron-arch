@@ -1,6 +1,5 @@
 import * as os from 'os';
 import { app } from 'electron';
-import * as configStorage from 'electron-json-storage';
 
 /**
  * Class to verify if the app is runnin in development environment.
@@ -48,8 +47,8 @@ class EnvironmentDetector {
     console.log('electron.app.getPath("home") ', app.getPath('home'));
     console.log('electron.app.getPath("appData") ', app.getPath('appData'));
     console.log('electron.app.getPath("userData") ', app.getPath('userData'));
-    console.log('configStorage.getDefaultDataPath() ', configStorage.getDefaultDataPath());
-    console.log('configStorage.getDataPath() ', configStorage.getDataPath());
+    //console.log('configStorage.getDefaultDataPath() ', configStorage.getDefaultDataPath());
+    //console.log('configStorage.getDataPath() ', configStorage.getDataPath());
   }
 }
 

@@ -2,7 +2,6 @@ import { ConfigData } from './ConfigData';
 import { ConfiguratorError } from './ConfiguratorError';
 import { envDetector } from '../environmentDetector/EnvironmentDetector';
 import { app } from 'electron';
-import * as configStorage from 'electron-json-storage';
 
 export abstract class AppConfigurator {
 
@@ -55,11 +54,11 @@ export abstract class AppConfigurator {
       this._configFolder = devConfigFolderPath;
     }
 
-    configStorage.setDataPath(this.configFolder);
+    //configStorage.setDataPath(this.configFolder);
   }
 
   public doConfig(): void | ConfiguratorError {
-    configStorage.has(this.configFileName, (error: any, hasKey: boolean) => {
+    /* configStorage.has(this.configFileName, (error: any, hasKey: boolean) => {
       if (error) {
         let msg = 'An error occurred when verifying the config file existance.';
 
@@ -77,11 +76,11 @@ export abstract class AppConfigurator {
       } else {
         this.createConfigFile();
       }
-    });
+    }); */
   }
 
   protected readConfigFile(): void | ConfiguratorError {
-    configStorage.get(this.configFileName, (error: any, data: ConfigData) => {
+    /* configStorage.get(this.configFileName, (error: any, data: ConfigData) => {
       if (error) {
         let msg = 'An error occurred when reading the config file.';
 
@@ -95,7 +94,7 @@ export abstract class AppConfigurator {
       }
 
 
-    })
+    }) */
   }
 
   protected createConfigFile(): void {
