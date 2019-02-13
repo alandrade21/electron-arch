@@ -1,13 +1,16 @@
-import { ConfigFileError } from './ConfigFileError';
 import { app } from 'electron';
 import * as _ from 'lodash';
 import * as path from 'path';
 import * as fs from 'fs';
+import * as mkdirp from 'mkdirp';
 
 import { ConfigData } from '../appConfigurator/ConfigData';
+import { InvalidParameterError } from './../errors/InvalidParameterError';
+import { ConfigFileError } from './ConfigFileError';
 
 /**
- * This class is responsible to manipulate a config file.
+ * This class is responsible to manipulate a config file. This class should be instantiated 
+ * identifying the concrete implementation of the config data.
  * 
  * It was created based on the work of Juan Cruz Viotti on electron-json-storage project 
  * (https://github.com/electron-userland/electron-json-storage).
@@ -36,17 +39,33 @@ export class ConfigFileManager<T extends ConfigData> {
 
   /**
    * Verifies if the config file identified by _filePath/_fileName exists on disk.
+   * 
+   * @throws ConfigFileError in case of any error different from ENOENT.
    */
   public fileExist(): boolean {
     try {
       fs.accessSync(path.join(this.filePath, this.fileName), fs.constants.F_OK);
       return true;
     } catch (error) {
-      return false;
+      if (error.code === 'ENOENT') {
+        return false;
+      }
+      const msg = `An error occurred verifying the configuration file ${path.join(this.filePath, this.fileName)} existence.`;
+      console.log(msg, error);
+      if (error.code === 'EPERM') {
+        throw new ConfigFileError(`${msg} There was a permission problem.`, error);
+      }
+      throw new ConfigFileError(`${msg} Unexpected problem.`, error);
     }
   }
 
-  public readFile(): T | ConfigFileError {
+  /**
+   * Reads the configuration file and returns an object of the concrete type representing the configuration
+   * options.
+   * 
+   * @throws ConfigFileError if the is any problem reading the file.
+   */
+  public readFile(): T {
     let rawData: string;
     try {
       rawData = fs.readFileSync(path.join(this.filePath, this.fileName), {encoding: 'utf8'});
@@ -54,11 +73,11 @@ export class ConfigFileManager<T extends ConfigData> {
       const msg = `An error occurred reading the configuration file ${path.join(this.filePath, this.fileName)}.`;
       console.log(msg, error);
       if (error.code === 'ENOENT') {
-        return new ConfigFileError(`${msg} The config file does not exist.`, error);
+        throw new ConfigFileError(`${msg} The config file does not exist.`, error);
       } else if (error.code === 'EPERM') {
-        return new ConfigFileError(`${msg} There was a permission problem.`, error);
+        throw new ConfigFileError(`${msg} There was a permission problem.`, error);
       } else {
-        return new ConfigFileError(`${msg} Unexpected problem.`, error);
+        throw new ConfigFileError(`${msg} Unexpected problem.`, error);
       }
     }
 
@@ -66,10 +85,57 @@ export class ConfigFileManager<T extends ConfigData> {
     try {
       data = JSON.parse(rawData);
     } catch (error) {
-      return new ConfigFileError(`Unexpected problem.`, error);
+      // TODO implement a method to recreate the config file via initialization parameter.
+      const msg = `It was not possible to read the configuration file ${path.join(this.filePath, this.fileName)}. It can be corrupted.`;
+      console.log(msg, error);
+      throw new ConfigFileError(msg, error);
     }
 
     return data;
+  }
+
+  /**
+   * Writes the config file to the disk, replacing its contents if it exists. 
+   * 
+   * If the directory does not exists, create it.
+   * 
+   * @param data The data to be writed to the file.
+   * 
+   * @throws InvalidParameterError if the data was not informed.
+   * @throws ConfigFileError In case of file system errors.
+   */
+  public writeFile(data: T): void {
+    if (_.isEmpty(data)) {
+      const msg = 'The data parameter must be informed.';
+      const trace = new Error(msg);
+      const error = new InvalidParameterError(msg, trace);
+      error.consoleLog();  
+      throw error;
+    }
+
+    const jsonData = JSON.stringify(data);
+
+    // Create the directory in case it doesn't exist yet
+    try {
+      mkdirp.sync(this.filePath);
+    } catch (error) {
+      const msg = `It was not possible to create the directory ${this.filePath} for the config file.`;
+      console.log(msg, error);
+      throw new ConfigFileError(msg, error);
+    }
+
+    // Write the file
+    try {
+      fs.writeFileSync(path.join(this.filePath, this.fileName), jsonData, {encoding: 'utf8'});
+    } catch (error) {
+      const msg = `An error occurred writing the configuration file ${path.join(this.filePath, this.fileName)}.`;
+      console.log(msg, error);
+      if (error.code === 'EPERM') {
+        throw new ConfigFileError(`${msg} There was a permission problem.`, error);
+      } else {
+        throw new ConfigFileError(`${msg} Unexpected problem.`, error);
+      }
+    }
   }
 
   get fileName() {

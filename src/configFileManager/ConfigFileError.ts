@@ -1,4 +1,4 @@
-import { ErrorWrapper } from '../errorWrapper/ErrorWrapper';
+import { ErrorWrapper } from '../errors/ErrorWrapper';
 
 /**
  * Class to represent error from config file manipulation.
