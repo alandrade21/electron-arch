@@ -24,10 +24,12 @@ export class ConfigFileManager<T extends ConfigData> {
    * This constructor uses the rules implemented on the setter methods to set the received values.
    * 
    * @param fileName The name of the config file, preferably with no extension. The .json 
-   * extension will be used. The file name cannot start with a dot. If omited, the default file
-   * name config.json will be used.
+   * extension will be used. If omited, the default file name config.json will be used.
    * @param filePath The path to the config file. This must be an absolute path. If omited, the
    * default path will be app.getPath('userData').
+   * 
+   * @throws InvalidParameterError if the fileName or filePath is empty.
+   * @throws ConfigFileError if the fileName is malformed or the filePath is not an absolute path.
    */
   constructor(
     fileName: string = 'config',
@@ -138,6 +140,8 @@ export class ConfigFileManager<T extends ConfigData> {
     }
   }
 
+  //////////////////////////////////////////
+
   get fileName() {
     return this._fileName;
   }
@@ -151,10 +155,13 @@ export class ConfigFileManager<T extends ConfigData> {
    * The config file, when created, will have the .json extension. If the fileName is provided with
    * a .json extension, the file will not be created as .json.json. But if another extension is 
    * provided, like .txt, the file will be created as .txt.json.
+   * 
+   * @throws InvalidParameterError if the filename is empty.
+   * @throws ConfigFileError if the filename is malformed.
    */
   set fileName(fileName: string) {
     if (_.isEmpty(fileName)) {
-      throw new Error('The fileName cannot be empty.');
+      throw new InvalidParameterError('The fileName cannot be empty.');
     }
 
     // Trick to prevent adding the `.json` twice
@@ -163,7 +170,7 @@ export class ConfigFileManager<T extends ConfigData> {
 
     // If after removing the extension the filename is empty.
     if (_.isEmpty(fileWithNoExt)) {
-      throw new Error('The fileName was not corrected formed.');
+      throw new ConfigFileError('The fileName was not corrected formed.');
     }
 
     // Prevent ENOENT and other similar errors when using
@@ -179,14 +186,17 @@ export class ConfigFileManager<T extends ConfigData> {
 
   /**
    * The filePath cannot be empty nor a relative path.
+   * 
+   * @throws InvalidParameterError if the filePath is empty.
+   * @throws ConfigFileError if the filePath is not an absolute path.
    */
   set filePath(filePath: string) {
     if (_.isEmpty(filePath)) {
-      throw new Error('The filePath cannot be empty.');
+      throw new InvalidParameterError('The filePath cannot be empty.');
     }
 
     if (!path.isAbsolute(filePath)) {
-      throw new Error('The filePath should be an absolute directory');
+      throw new ConfigFileError('The filePath should be an absolute directory');
     }
 
     this._filePath = path.normalize(filePath);
