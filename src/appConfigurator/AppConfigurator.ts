@@ -17,13 +17,13 @@ export abstract class AppConfigurator <T extends ConfigData> {
   private _appOptions: T;
 
   /**
-   * This construvtor verifies which is the user's OS, and detects the user's home folder accordingly.
+   * This constructor verifies which is the user's OS, and detects the user's home folder accordingly.
    *
    * If the evironment is development, the home user folder is set to the value informed in the 
    * devConfigFolderPath parameter.
    *
    * If the environment is not development and the OS is windows, the config folder is set to the
-   * folder .config inside the folder in which the app is installed.
+   * folder .config inside the app instalation folder.
    *
    * If the environment is not development and the OS is not windows (i.e. linux like OS), the config
    * folder is set to the folder .config/<<appName>>/ inside the actual OS user's home folder.
@@ -120,7 +120,7 @@ export abstract class AppConfigurator <T extends ConfigData> {
   }
 
   /**
-   * The implementation of this method should initialize an options object with its initial value e 
+   * The implementation of this method should initialize an options object with its initial value and 
    * write it to the disk using the ConfigFileManager instance created by this superclass.
    */
   protected abstract createConfigFile(): void;
