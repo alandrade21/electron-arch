@@ -4,7 +4,7 @@
 
 # Introduction
 
-This is a software archtecture lib, with common solutions used by my apps.
+This is a software archtecture lib, with common electron solutions used by my apps.
 
 # Instalation
 
@@ -62,3 +62,30 @@ To use in JS, import the lib with `var electronArch = require('@alandrade21/elec
 
 To use in TS: `import { InvalidParameterError } from '@alandrade21/electron-arch';`
 
+## MainWindowController
+
+This is an abstraction to the electron main window initialization, created according to https://medium.com/@davembush/typescript-and-electron-the-right-way-141c2e15e4e1.
+
+To use in JS: `var MainWindowController = require('@alandrade21/electron-arch').MainWindowController;`
+
+To use in TS: `import { MainWindowController } from '@alandrade21/electron-arch';`
+
+### Usage
+
+This class hava some static utility methods. They must be called only after `app.on('ready')` event.
+
+#### Main window initialization
+
+After `app.on('ready')` event call `MainWindowController.initialize()`. If the main window is already initialized when this static method is called, an `MainWindowAlreadyInitializedError` is throw.
+
+The main window created by this method is not showed automatically. To show the window call `MainWindowController.mainWindow.show()`.
+
+If the app is fired with the --serve parameter, the main window will be loaded with the content of `http://localhost:4200`. Else, the main window will be loaded with the file `./dist/index.html`.
+
+#### Main window access
+
+To access the main window created use `MainWindowController.mainWindow`. This will throw an `MainWindowNotInitializedError` if the main window were not initialized yet.
+
+## ConfigFileManager
+
+## AppConfigurator
