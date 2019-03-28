@@ -10,9 +10,9 @@ Topics:
 
 1. [Instalation](#instalation)
 1. [Functionalities](#functionalities)
-  1. [Error Abstraction](#error-abstraction)
-  1. [EnvironmentDetector](#environmentdetector)
-  1. [MainWindowController](#mainwindowcontroller)
+   1. [Error Abstraction](#error-abstraction)
+   1. [EnvironmentDetector](#environmentdetector)
+   1. [MainWindowController](#mainwindowcontroller)
 
 # Instalation
 
