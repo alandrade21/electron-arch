@@ -7,7 +7,8 @@
 export class ErrorWrapper {
 
   constructor(protected _message: string, 
-              protected _error: Error | any | null = null) {}
+              protected _error: Error | any | null = null,
+              protected _type: string | null = null) {}
 
   get message(): string {
     return this._message;
@@ -15,5 +16,9 @@ export class ErrorWrapper {
 
   get error(): Error | any | null {
     return this._error;
+  }
+
+  get type(): string | null {
+    return this._type;
   }
 }

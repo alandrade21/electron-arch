@@ -5,6 +5,9 @@ import { ErrorWrapper } from './ErrorWrapper';
  */
 export class InvalidParameterError extends ErrorWrapper{
 
+  // Override
+  protected _type = 'RUN_TIME_ERROR';
+
   /**
    * Method to console print an error of this type, identifying the type.
    */

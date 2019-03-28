@@ -1,9 +1,10 @@
-import { MainWindowNotInitializedError } from './MainWindowNotInitializedError';
 import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
+import { MainWindowNotInitializedError } from './MainWindowNotInitializedError';
 import { MainWindowAlreadyInitializedError } from './MainWindowAlreadyInitializedError';
+import { envDetector } from './../environmentDetector/EnvironmentDetector';
 
 /**
  * Class encapsulate the main window initialization proccess and to grant static access to the
@@ -47,7 +48,7 @@ export class MainWindowController {
       show: false
     });
 
-    if (MainWindowController.serve) {
+    if (envDetector.isDev() && MainWindowController.serve) {
       console.log(process.cwd());
       require('electron-reload')(process.cwd(), {
         electron: require(`${process.cwd()}/node_modules/electron`)
@@ -62,7 +63,9 @@ export class MainWindowController {
       }));
     }
 
-    MainWindowController.win.webContents.openDevTools();
+    if (envDetector.isDev()) {
+      MainWindowController.win.webContents.openDevTools();
+    }
 
     // Emitted when the window is closed.
     MainWindowController.win.on('closed', () => {
