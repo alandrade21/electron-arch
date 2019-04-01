@@ -8,7 +8,7 @@ import { envDetector } from '../environmentDetector/EnvironmentDetector';
 import { InvalidParameterError } from '../errors/InvalidParameterError';
 
 /**
- * Superclass, with basic functionalities, for app configuration classes.
+ * Super class, with basic functionalities, for app configuration classes.
  */
 export abstract class AppConfigurator <T extends ConfigData> {
 
@@ -25,8 +25,11 @@ export abstract class AppConfigurator <T extends ConfigData> {
    * If the environment is not development and the OS is windows, the config folder is set to the
    * folder .config inside the app installation folder.
    *
-   * If the environment is not development and the OS is not windows (i.e. linux like OS), the config
+   * If the environment is not development and the OS is Linux, the config
    * folder is set to the folder .config/<<appName>>/ inside the actual OS user's home folder.
+   *
+   * If the OS is macOS, the config folder is set to the folder Library/Application Support/<<aapName>>/
+   * inside the actual OS user's home folder.
    *
    * This constructor uses this information to configure a ConfigFileManager.
    *
@@ -44,6 +47,18 @@ export abstract class AppConfigurator <T extends ConfigData> {
    * @throws ConfigFileError if the configFileName is malformed.
    */
   constructor(appName: string, devConfigFolderPath: string, configFileName: string = 'config') {
+
+    if (!appName) {
+      let msg = 'The appName parameter must be informed';
+      console.log(msg);
+      throw new InvalidParameterError(msg);
+    }
+
+    if (!devConfigFolderPath) {
+      let msg = 'The devConfigFolderPath parameter must be informed';
+      console.log(msg);
+      throw new InvalidParameterError(msg);
+    }
 
     let configFolder: string;
 
@@ -67,7 +82,7 @@ export abstract class AppConfigurator <T extends ConfigData> {
       if ((error instanceof InvalidParameterError) || (error instanceof ConfigFileError)) {
         dialog.showErrorBox(title, error.message);
       } else {
-        this.unknowErrorDialog(title);
+        this.unknownErrorDialog(title);
       }
 
       throw error;
@@ -77,7 +92,7 @@ export abstract class AppConfigurator <T extends ConfigData> {
   /**
    * Method to start the app configuration.
    *
-   * This superclass execute the existance verification of the config file. If it exists, the file is
+   * This super class execute the existence check of the config file. If it exists, the file is
    * read and the options object is initialized. If it not exists, the method that creates the config
    * file is called.
    *
@@ -141,7 +156,7 @@ export abstract class AppConfigurator <T extends ConfigData> {
    *
    * @param title to be shown in the error dilog.
    */
-  protected unknowErrorDialog(title: string): void {
+  protected unknownErrorDialog(title: string): void {
     dialog.showErrorBox(title, 'An unexpected error ocurred. ' +
                             'To see the error details, run this aplication on terminal.');
   }
