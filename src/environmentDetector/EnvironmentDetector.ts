@@ -2,7 +2,7 @@ import * as os from 'os';
 import { app } from 'electron';
 
 /**
- * Class to verify if the app is runnin in development environment.
+ * Class to verify if the app is running in development environment.
  *
  * This is made to allow that a "production" version can be used in the same machine used to
  * development, preserving the production database and configuration files.
@@ -15,7 +15,7 @@ import { app } from 'electron';
  * and configuration files of a possible "production" version installed in your machine can be
  * touched and, maybe, broken.
  *
- * So, please, be carefull with this and, case you have a "production" version installed, do a
+ * So, please, be careful with this and, case you have a "production" version installed, do a
  * backup before start development, just in case. ;)
  */
 class EnvironmentDetector {

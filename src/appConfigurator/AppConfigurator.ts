@@ -49,15 +49,15 @@ export abstract class AppConfigurator <T extends ConfigData> {
   constructor(appName: string, devConfigFolderPath: string, configFileName: string = 'config') {
 
     if (!appName) {
-      let msg = 'The appName parameter must be informed';
-      console.log(msg);
-      throw new InvalidParameterError(msg);
+      let error = new InvalidParameterError('The appName parameter must be informed');
+      error.consoleLog();
+      throw error;
     }
 
     if (!devConfigFolderPath) {
-      let msg = 'The devConfigFolderPath parameter must be informed';
-      console.log(msg);
-      throw new InvalidParameterError(msg);
+      let error = new InvalidParameterError('The devConfigFolderPath parameter must be informed');
+      error.consoleLog();
+      throw error;
     }
 
     let configFolder: string;
@@ -96,7 +96,7 @@ export abstract class AppConfigurator <T extends ConfigData> {
    * read and the options object is initialized. If it not exists, the method that creates the config
    * file is called.
    *
-   * This method shoud be overriden to execute specific configurations.
+   * This method should be overridden to execute specific configurations.
    *
    * This method show a dialog box with an error message in case of errors.
    *
@@ -136,7 +136,7 @@ export abstract class AppConfigurator <T extends ConfigData> {
 
   /**
    * The implementation of this method should initialize an options object with its initial value and
-   * write it to the disk using the ConfigFileManager instance created by this superclass.
+   * write it to the disk using the ConfigFileManager instance created by this super class.
    */
   protected abstract createConfigFile(): void;
 

@@ -7,9 +7,9 @@ import { MainWindowAlreadyInitializedError } from './MainWindowAlreadyInitialize
 import { envDetector } from './../environmentDetector/EnvironmentDetector';
 
 /**
- * Class encapsulate the main window initialization proccess and to grant static access to the
+ * Class to encapsulate the main window initialization process and to grant static access to the
  * main window variable across the app.
- * 
+ *
  * Implementation based on https://medium.com/@davembush/typescript-and-electron-the-right-way-141c2e15e4e1.
  */
 export class MainWindowController {
@@ -20,8 +20,8 @@ export class MainWindowController {
 
   /**
    * Public access method to the main window.
-   * 
-   * If the main window were not initialized, this method throw an 
+   *
+   * If the main window were not initialized, this method throw an
    * MainWindowNotInitializedError.
    */
   public static get mainWindow(): BrowserWindow {
@@ -79,8 +79,8 @@ export class MainWindowController {
 
   /**
    * Method to control main window initialization.
-   * 
-   * This methos should be called only after app.on('ready').
+   *
+   * This methods should be called only after app.on('ready').
    */
   public static initialize(): void {
 
@@ -115,9 +115,8 @@ export class MainWindowController {
 
     } catch (e) {
       console.log('unexpected error during main window initialization.', e);
-      
+
       throw e;
     }
   }
 }
-

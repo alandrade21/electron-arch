@@ -11,5 +11,3 @@ export * from './appConfigurator/ConfiguratorError';
 export * from './configFileManager/ConfigFileError';
 export * from './mainWindow/MainWindowAlreadyInitializedError';
 export * from "./mainWindow/MainWindowNotInitializedError"
-
-

@@ -6,12 +6,8 @@ import { ErrorWrapper } from './ErrorWrapper';
 export class InvalidParameterError extends ErrorWrapper{
 
   // Override
-  protected _type = 'RUN_TIME_ERROR';
+  protected _type = 'RUNTIME_ERROR';
 
-  /**
-   * Method to console print an error of this type, identifying the type.
-   */
-  public consoleLog(): void {
-    console.log(`InvalidParameterError: ${this.message}`, this.error);
-  }
+  // Override
+  protected _className = 'InvalidParameterError';
 }
