@@ -27,7 +27,7 @@ export class MainWindowController {
    */
   public static get mainWindow(): BrowserWindow {
     if (!MainWindowController.win) {
-      throw new MainWindowNotInitializedError('Main window not initialized');
+      throw new MainWindowNotInitializedError();
     }
     return MainWindowController.win;
   }
@@ -75,7 +75,6 @@ export class MainWindowController {
       // when you should delete the corresponding element.
       this.win = null;
     });
-
   }
 
   /**

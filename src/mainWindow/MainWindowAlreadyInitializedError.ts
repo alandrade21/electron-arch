@@ -8,6 +8,6 @@ export class MainWindowAlreadyInitializedError extends ErrorWrapper {
   protected _className = 'MainWindowAlreadyInitializedError';
 
   constructor(){
-    super('Main window already initialized.');
+    super('Main window already initialized');
   }
 }

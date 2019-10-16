@@ -6,4 +6,8 @@ export class MainWindowNotInitializedError extends ErrorWrapper {
 
   // Override
   protected _className = 'MainWindowNotInitializedError';
+
+  constructor(){
+    super('Main window not initialized');
+  }
 }

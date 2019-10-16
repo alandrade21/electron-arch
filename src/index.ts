@@ -7,7 +7,7 @@ export * from './mainWindow/MainWindowController';
 // Error classes.
 export * from './errors/ErrorWrapper';
 export * from './errors/InvalidParameterError';
-export * from './appConfigurator/ConfiguratorError';
+export * from './errors/UnexpectedError';
 export * from './configFileManager/ConfigFileError';
 export * from './mainWindow/MainWindowAlreadyInitializedError';
 export * from "./mainWindow/MainWindowNotInitializedError"

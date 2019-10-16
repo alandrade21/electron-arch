@@ -3,7 +3,6 @@ import { app, dialog } from 'electron';
 import { ConfigFileError } from './../configFileManager/ConfigFileError';
 import { ConfigFileManager } from './../configFileManager/ConfigFileManager';
 import { ConfigData } from './ConfigData';
-import { ConfiguratorError } from './ConfiguratorError';
 import { envDetector } from '../environmentDetector/EnvironmentDetector';
 import { InvalidParameterError } from '../errors/InvalidParameterError';
 
@@ -49,15 +48,11 @@ export abstract class AppConfigurator <T extends ConfigData> {
   constructor(appName: string, devConfigFolderPath: string, configFileName: string = 'config') {
 
     if (!appName) {
-      let error = new InvalidParameterError('The appName parameter must be informed');
-      error.consoleLog();
-      throw error;
+      throw new InvalidParameterError('The appName parameter must be informed');
     }
 
     if (!devConfigFolderPath) {
-      let error = new InvalidParameterError('The devConfigFolderPath parameter must be informed');
-      error.consoleLog();
-      throw error;
+      throw new InvalidParameterError('The devConfigFolderPath parameter must be informed');
     }
 
     let configFolder: string;
@@ -75,7 +70,6 @@ export abstract class AppConfigurator <T extends ConfigData> {
     try {
       this.cfm = new ConfigFileManager<T>(configFileName, configFolder);
     } catch (error) {
-      console.log('AppConfigurator Initialization Error.', error);
 
       const title = `${appName} Initialization Error`;
 

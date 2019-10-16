@@ -53,7 +53,7 @@ export class ConfigFileManager<T extends ConfigData> {
         return false;
       }
       const msg = `An error occurred verifying the configuration file ${path.join(this.filePath, this.fileName)} existence.`;
-      console.log(msg, error);
+
       if (error.code === 'EPERM') {
         throw new ConfigFileError(`${msg} There was a permission problem.`, error, 'EPERM');
       }
@@ -73,7 +73,7 @@ export class ConfigFileManager<T extends ConfigData> {
       rawData = fs.readFileSync(path.join(this.filePath, this.fileName), {encoding: 'utf8'});
     } catch (error) {
       const msg = `An error occurred reading the configuration file ${path.join(this.filePath, this.fileName)}.`;
-      console.log(msg, error);
+
       if (error.code === 'ENOENT') {
         throw new ConfigFileError(`${msg} The config file does not exist.`, error, error.code);
       } else if (error.code === 'EPERM') {
@@ -87,10 +87,9 @@ export class ConfigFileManager<T extends ConfigData> {
     try {
       data = JSON.parse(rawData);
     } catch (error) {
+
       // TODO implement a method to recreate the config file via initialization parameter.
-      const msg = `It was not possible to read the configuration file ${path.join(this.filePath, this.fileName)}. It could be corrupted.`;
-      console.log(msg, error);
-      throw new ConfigFileError(msg, error, 'PARSE_ERROR');
+      throw new ConfigFileError(`It was not possible to read the configuration file ${path.join(this.filePath, this.fileName)}. It could be corrupted.`, error, 'PARSE_ERROR');
     }
 
     return data;
@@ -111,7 +110,6 @@ export class ConfigFileManager<T extends ConfigData> {
       const msg = 'The data parameter must be informed.';
       const trace = new Error(msg);
       const error = new InvalidParameterError(msg, trace);
-      error.consoleLog();
       throw error;
     }
 
@@ -121,9 +119,7 @@ export class ConfigFileManager<T extends ConfigData> {
     try {
       mkdirp.sync(this.filePath);
     } catch (error) {
-      const msg = `It was not possible to create the directory ${this.filePath} for the config file.`;
-      console.log(msg, error);
-      throw new ConfigFileError(msg, error, (error.code ? error.code : null));
+      throw new ConfigFileError(`It was not possible to create the directory ${this.filePath} for the config file.`, error, (error.code ? error.code : null));
     }
 
     // Write the file
@@ -131,7 +127,7 @@ export class ConfigFileManager<T extends ConfigData> {
       fs.writeFileSync(path.join(this.filePath, this.fileName), jsonData, {encoding: 'utf8'});
     } catch (error) {
       const msg = `An error occurred writing the configuration file ${path.join(this.filePath, this.fileName)}.`;
-      console.log(msg, error);
+
       if (error.code === 'EPERM') {
         throw new ConfigFileError(`${msg} There was a permission problem.`, error, error.code);
       } else {
