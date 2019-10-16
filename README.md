@@ -54,7 +54,13 @@ import { ErrorWrapper } from '@alandrade21/electron-arch';
 export class MyCustomError extends ErrorWrapper {}
 ```
 
-This class provide a `consoleLog(): void` method that prints the error to the console in the format `console.log(\`${this.className}: ${this.message}\`, this.type, this.error)`. `className` is a protected variable that must be overridden in any child class. This variable must be initialized with the name of the Class. This is not obtained during runtime because the minification can change the class name.
+This class provide a `consoleLog(): void` method that prints the error to the console in the format:
+
+```typescript
+console.log(`${this.className}: ${this.message}`, this.type, this.error)
+```
+
+The `className` is a protected variable that must be overridden in any child class. This variable must be initialized with the name of the Class. This is not obtained during runtime because the minification can change the class name.
 
 ### InvalidParameterError
 
