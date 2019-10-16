@@ -154,11 +154,11 @@ export abstract class AppConfigurator <T extends ConfigData> {
   /**
    * Show a error dialog box with a standard message for unexpected errors.
    *
-   * @param title to be shown in the error dilog.
+   * @param title to be shown in the error dialog.
    */
   protected unknownErrorDialog(title: string): void {
     dialog.showErrorBox(title, 'An unexpected error ocurred. ' +
-                            'To see the error details, run this aplication on terminal.');
+                            'To see the error details, run this application on terminal.');
   }
 
   ///////////////////////////////////////////////////////////////////////

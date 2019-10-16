@@ -32,6 +32,6 @@ export abstract class ErrorWrapper {
    * Method to console print an error of this type, identifying the type.
    */
   public consoleLog(): void {
-    console.log(`${this.className}: ${this.message}`, this.error);
+    console.log(`${this.className}: ${this.message}`, this.type, this.error);
   }
 }

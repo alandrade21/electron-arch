@@ -5,7 +5,7 @@ import { ErrorWrapper } from '../errors/ErrorWrapper';
  */
 export class ConfigFileError extends ErrorWrapper {
   // Override
-  protected _type = 'RUNTIME_ERROR';
+  protected _type = 'FS_ERROR';
 
   // Override
   protected _className = 'ConfigFileError';

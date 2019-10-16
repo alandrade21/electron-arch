@@ -5,6 +5,7 @@ import * as url from 'url';
 import { MainWindowNotInitializedError } from './MainWindowNotInitializedError';
 import { MainWindowAlreadyInitializedError } from './MainWindowAlreadyInitializedError';
 import { envDetector } from './../environmentDetector/EnvironmentDetector';
+import { UnexpectedError } from '../errors/UnexpectedError';
 
 /**
  * Class to encapsulate the main window initialization process and to grant static access to the
@@ -85,15 +86,11 @@ export class MainWindowController {
   public static initialize(): void {
 
     if (MainWindowController.win) {
-      throw new MainWindowAlreadyInitializedError('Main window already initialized.');
+      throw new MainWindowAlreadyInitializedError();
     }
 
     try {
 
-      // This method will be called when Electron has finished
-      // initialization and is ready to create browser windows.
-      // Some APIs can only be used after this event occurs.
-      // app.on('ready', this.createWindow);
       MainWindowController.createWindow();
 
       // Quit when all windows are closed.
@@ -112,11 +109,8 @@ export class MainWindowController {
           MainWindowController.createWindow();
         }
       });
-
     } catch (e) {
-      console.log('unexpected error during main window initialization.', e);
-
-      throw e;
+      throw new UnexpectedError('Unexpected error during main window initialization', e);
     }
   }
 }
