@@ -46,6 +46,9 @@ export class MainWindowController {
       y: 0,
       width: size.width,
       height: size.height,
+      webPreferences: {
+        nodeIntegration: true,
+      },
       show: false
     });
 
