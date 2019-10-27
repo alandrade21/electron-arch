@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) 2019 André Andrade - alandrade21@gmail.com
+ * 
+ * This file is part of the "electron-arch" library.
+ *
+ * "electron-arch" is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * "electron-arch" is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with "server-arch".  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import * as os from 'os';
 import { app } from 'electron';
 
@@ -47,8 +66,11 @@ class EnvironmentDetector {
     console.log('electron.app.getPath("home") ', app.getPath('home'));
     console.log('electron.app.getPath("appData") ', app.getPath('appData'));
     console.log('electron.app.getPath("userData") ', app.getPath('userData'));
-    //console.log('configStorage.getDefaultDataPath() ', configStorage.getDefaultDataPath());
-    //console.log('configStorage.getDataPath() ', configStorage.getDataPath());
+    console.log('electron.app.getAppPath() ', app.getAppPath());
+    console.log('electron.app.getName() ', app.getName());
+    console.log('electron.app.getVersion() ', app.getVersion());
+    console.log('electron.app.getLocale() ', app.getLocale());
+    console.log('electron.app.getLocaleCountryCode() ', app.getLocaleCountryCode());
   }
 }
 
