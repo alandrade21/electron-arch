@@ -43,19 +43,18 @@ export class ConfigFileManager<T extends ConfigData> {
    * This constructor uses the rules implemented on the setter methods to set the received values.
    *
    * @param fileName The name of the config file, preferably with no extension. The .json
-   * extension will be used. If omitted, the default file name config.json will be used.
-   * @param filePath The path to the config file. This must be an absolute path. If omitted, the
-   * default path will be app.getPath('userData').
+   * extension will be used.
+   * @param filePath The path to the config file. This must be an absolute path.
    *
    * @throws InvalidParameterError if the fileName or filePath is empty.
    * @throws ConfigFileError if the fileName is malformed or the filePath is not an absolute path.
    */
   constructor(
-    fileName: string = 'config',
-    filePath: string = app.getPath('userData')
+    fileName: string,
+    filePath: string
   ){
-    this.fileName = fileName;
-    this.filePath = filePath;
+    this.setFileName(fileName);
+    this.setFilePath(filePath);
   }
 
   /**
@@ -174,7 +173,7 @@ export class ConfigFileManager<T extends ConfigData> {
    * @throws InvalidParameterError if the filename is empty.
    * @throws ConfigFileError if the filename is malformed.
    */
-  set fileName(fileName: string) {
+  private setFileName(fileName: string): void {
     if (_.isEmpty(fileName)) {
       throw new InvalidParameterError('The fileName cannot be empty.');
     }
@@ -205,7 +204,7 @@ export class ConfigFileManager<T extends ConfigData> {
    * @throws InvalidParameterError if the filePath is empty.
    * @throws ConfigFileError if the filePath is not an absolute path.
    */
-  set filePath(filePath: string) {
+  private setFilePath(filePath: string): void {
     if (_.isEmpty(filePath)) {
       throw new InvalidParameterError('The filePath cannot be empty.');
     }

@@ -17,19 +17,15 @@
  * along with "server-arch".  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './appConfigurator/AppConfigurator';
-export * from './appConfigurator/ConfigData';
-export * from './configFileManager/ConfigFileManager';
-export * from './dataBaseFileManager/DatabaseFileManager';
-export * from './environmentDetector/EnvironmentDetector';
-export * from './mainWindow/MainWindowController';
+import { ErrorWrapper } from '../errors/ErrorWrapper';
 
-// Error classes.
-export * from './errors/ErrorWrapper';
-export * from './errors/InvalidParameterError';
-export * from './errors/UnexpectedError';
-export * from './configFileManager/ConfigFileError';
-export * from './mainWindow/MainWindowAlreadyInitializedError';
-export * from './mainWindow/MainWindowNotInitializedError';
-export * from './appConfigurator/InvalidPlatformError';
-export * from "./dataBaseFileManager/DatabaseFileError";
+/**
+ * Class to represent error from database file manipulation.
+ */
+export class DatabaseFileError extends ErrorWrapper {
+  // Override
+  protected _type = 'FS_ERROR';
+
+  // Override
+  protected _className = 'DatabaseFileError';
+}
