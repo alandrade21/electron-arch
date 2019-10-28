@@ -137,6 +137,13 @@ export class DatabaseFileManager {
         null, 'ENOENT');
     }
 
+    // Create the directory in case it doesn't exist yet
+    try {
+      mkdirp.sync(this.filePath);
+    } catch (error) {
+      throw new DatabaseFileError(`It was not possible to create the directory ${this.filePath} for the database file.`, error, (error.code ? error.code : null));
+    }
+
     try {
       fs.copyFileSync(path.join(skelFilePath, skelFileName), 
                       path.join(this.filePath, this.fileName), fs.constants.COPYFILE_EXCL);
