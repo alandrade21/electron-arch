@@ -297,6 +297,8 @@ This class offers the `fileName` and `filePath` accessors to read these values.
 
 This is an abstract super class for local electron app configurator class, with basic configuration functionalities already built.
 
+This class shows dialogs, so the main window must be initialized before its use.
+
 To use:
 
 ```typescript
@@ -327,11 +329,11 @@ The `configFileName` optional parameter is a string with the configuration file 
 
 This constructor verifies which is the user's OS, and choses the config and data folders accordingly.
 
-* If the environment is development (see [EnvironmentDetector](#environmentdetector)), the config folder is set to the value informed in the `devConfigFolderPath` parameter and the data folder is set to the value informed in the `devDataFolderPath` parameter. 
+* If the environment is development (see [EnvironmentDetector](#environmentdetector)), the config folder is set to the value informed in the `devConfigFolderPath` parameter and the data folder is set to the value informed in the `devDataFolderPath` parameter.
 
-* If the environment is not development and the OS is windows, the config folder is set to the folder `.config` inside the app installation folder and the data folder is set to the folder `.data` inside the app installation folder. 
+* If the environment is not development and the OS is windows, the config folder is set to the folder `.config` inside the app installation folder and the data folder is set to the folder `.data` inside the app installation folder.
 
-* If the environment is not development and the OS Linux, the config folder is set to the folder `.config/<<appName>>/` inside the actual OS user's home folder and the data folder is set to the folder `.local/share/<<appName>>` inside the actual OS user's home folder. 
+* If the environment is not development and the OS Linux, the config folder is set to the folder `.config/<<appName>>/` inside the actual OS user's home folder and the data folder is set to the folder `.local/share/<<appName>>` inside the actual OS user's home folder.
 
 * If the OS is macOS, the config and data folders are set to the folder `Library/Application Support/<<aapName>>/` inside the actual OS user's home folder.
 

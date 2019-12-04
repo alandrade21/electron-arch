@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2019 André Andrade - alandrade21@gmail.com
- * 
+ *
  * This file is part of the "electron-arch" library.
  *
  * "electron-arch" is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with "server-arch".  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -27,6 +27,8 @@ import { InvalidPlatformError } from './InvalidPlatformError';
 
 /**
  * Super class, with basic functionalities, for app configuration classes.
+ *
+ * This class shows dialogs, so the main window must be initialized before its use.
  */
 export abstract class AppConfigurator <T extends ConfigData> {
 
@@ -37,22 +39,22 @@ export abstract class AppConfigurator <T extends ConfigData> {
   protected _dataFolder: string;
 
   /**
-   * This constructor verifies which is the user's OS, and choses the config and data folders 
+   * This constructor verifies which is the user's OS, and choses the config and data folders
    * accordingly.
    *
-   * If the environment is development, the config and data folders are set to the value informed 
+   * If the environment is development, the config and data folders are set to the value informed
    * in the devConfigFolderPath and devDataFolderPath parameters.
    *
    * If the environment is not development and the OS is windows, the config folder is set to the
-   * folder .config inside the app installation folder, and the data folder is set to the folder 
+   * folder .config inside the app installation folder, and the data folder is set to the folder
    * .data inside the app installation folder.
    *
    * If the environment is not development and the OS is Linux, the config
-   * folder is set to the folder .config/<<appName>>/ inside the actual OS user's home folder, and 
-   * the data folder is set to the folder .local/share/<<appName>>/ inside the actual OS user's 
+   * folder is set to the folder .config/<<appName>>/ inside the actual OS user's home folder, and
+   * the data folder is set to the folder .local/share/<<appName>>/ inside the actual OS user's
    * home folder.
    *
-   * If the OS is macOS, the config and data folders are set to the folder 
+   * If the OS is macOS, the config and data folders are set to the folder
    * Library/Application Support/<<aapName>>/ inside the actual OS user's home folder.
    *
    * This constructor uses this information to configure a ConfigFileManager.
@@ -63,7 +65,7 @@ export abstract class AppConfigurator <T extends ConfigData> {
    * @param devConfigFolderPath Absolute path to the development data folder structure. This structure
    * is a copy of the system folders that will be used during production. For more info, see
    * https://github.com/alandrade21/devTestFolders.
-   * 
+   *
    * @param devDataFolderPath Absolute path to the development data folder structure. This structure
    * is a copy of the system folders that will be used during production. For more info, see
    * https://github.com/alandrade21/devTestFolders.
@@ -71,12 +73,12 @@ export abstract class AppConfigurator <T extends ConfigData> {
    * @param configFileName Name of the configuration file to be used. This file will have the .json
    * extension.
    *
-   * @throws InvalidParameterError if the appName, devConfigFolderPath or devDataFolderPath 
+   * @throws InvalidParameterError if the appName, devConfigFolderPath or devDataFolderPath
    * is empty.
    * @throws InvalidPlatformError if the platform running the app were nor win32, linux or darwin.
    * @throws ConfigFileError if the configFileName is malformed.
    */
-  constructor(appName: string, devConfigFolderPath: string, devDataFolderPath: string, 
+  constructor(appName: string, devConfigFolderPath: string, devDataFolderPath: string,
               configFileName: string = 'config') {
 
     if (!appName) {
