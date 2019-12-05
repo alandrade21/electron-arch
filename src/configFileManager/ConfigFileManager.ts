@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2019 André Andrade - alandrade21@gmail.com
- * 
+ *
  * This file is part of the "electron-arch" library.
  *
  * "electron-arch" is free software: you can redistribute it and/or modify
@@ -12,12 +12,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with "server-arch".  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { app } from 'electron';
+// import { app } from 'electron';
 import * as _ from 'lodash';
 import * as path from 'path';
 import * as fs from 'fs';
