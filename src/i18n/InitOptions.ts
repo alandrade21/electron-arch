@@ -23,13 +23,13 @@
    * Language to use
    * @default 'en'
    */
-  lng?: 'en';
+  lng?: string;
 
   /**
    * Language to use if translations in user language are not available.
    * @default 'en'
    */
-  fallbackLng?: 'en';
+  fallbackLng?: string;
 
   /**
    * Absolute path to the folder containing the translation files.
