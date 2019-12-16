@@ -44,7 +44,7 @@ class I18n {
 
     this._options.loadPath = path.normalize(this._options.loadPath);
 
-    let fileList: string[]
+    let fileList: string[];
 
     try {
       fileList = fs.readdirSync(this._options.loadPath);
@@ -92,7 +92,7 @@ class I18n {
 
       let messages: Map<string, string> = new Map();
 
-      let obj = {}
+      let obj = {};
 
       try {
         obj = JSON.parse(rawData);
@@ -100,9 +100,7 @@ class I18n {
         throw new I18nError(`It was not possible to parse the messages file ${path.join(this._options.loadPath, fileName)}. It could be corrupted.`, error, 'PARSE_ERROR');
       }
 
-      for (let key of Object.keys(obj) as Array<keyof typeof obj>){
-        messages.set(key, obj[key]);
-      }
+      messages = this.objectToMap(obj);
 
       console.log(messages);
 
@@ -147,12 +145,63 @@ class I18n {
     }
   }
 
-  private objectToMap(obj: {}): Map<string, string> {
+  /**
+   * This is a recursive utility function to convert a json object containing the i18n translations to a
+   * key => value map.
+   *
+   * The basic use case is when the json object is in the format below:
+   *
+   * {
+   *   key1: value1,
+   *   key2: value2,
+   *   ...
+   *   keyN: value N
+   * }
+   *
+   * This case is converted to a map:
+   *
+   * key1 => value1, key2 => value2, ..., keyN => valueN.
+   *
+   * The object can contain sub-objects, as shown below:
+   *
+   * {
+   *   key1: value1,
+   *   key2: {
+   *     subKey1: subValue1,
+   *     subKey2: subValue2,
+   *     ...
+   *     subkeyN: subValueN
+   *   },
+   *   ...
+   *   keyN: value N
+   * }
+   *
+   * In this case, the expected output is the map:
+   *
+   * key1 => value1, key2.subKey1 => subValue1, key2.subKey2 => subValue2, ..., key2.subKeyN => subValueN,
+   * ..., keyN => valueN.
+   *
+   * Observe the composition made in the key (i.e. key2.subKey2) in this case.
+   *
+   * This behavior is obtained recursively calling this method. The subject is passed as the obj param,
+   * and the key containing the sub object (key2 in the example), is passed as the recursiveKey parameter.
+   *
+   * @param obj
+   * @param recursiveKey
+   */
+  private objectToMap(obj: {}, recursiveKey?: string | null): Map<string, string> {
 
     let map: Map<string, string> = new Map();
 
     for (let key of Object.keys(obj) as Array<keyof typeof obj>){
-      map.set(key, obj[key]);
+      if (typeof obj[key] === 'string' ) {
+        recursiveKey ? map.set(`${recursiveKey}.${key}`, obj[key]) : map.set(key, obj[key]);
+      } else {
+        let subMab: Map<string, string> = this.objectToMap(obj[key], key);
+        subMab.forEach((subValue: string, subKey: string) => {
+          recursiveKey ? map.set(`${recursiveKey}.${subKey}`, subValue) : map.set(subKey, subValue);
+        });
+      }
     }
 
     return map;
