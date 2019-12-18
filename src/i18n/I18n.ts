@@ -28,24 +28,65 @@ import { runInNewContext } from 'vm';
 
 class I18n {
 
+  // Indicates that the component was initialized (all translations loaded).
   private _initialized: boolean = false;
 
+  // Object used to initialize the component.
   private _options: InitOptions;
 
+  // List of language translations loaded.
   private _languagesLoaded: string[] = [];
 
+  // Map of language id => translations map, except the fallback language.
   private _messagesLoaded: Map<string, Map<string, string>> = new Map();
 
+  // Translations for the fallback language.
+  private _fallBackMessages: Map<string, string>;
+
+  // Language in current use
+  private _usingLanguage: string = 'en';
+
+  // Messages for the language in current use.
+  private _usingMessages: Map<string, string>;
+
+  /**
+   * This method initializes the i18n engine, using an initialization object.
+   *
+   * The initialization process read the translations files from the disk using the load path provided in
+   * the initialization object. Each filename must be on the format messages.<<language ID>>.json.
+   * For example, are valid names messages.en.json and messages.pt-BR.json.
+   *
+   * Files that not follow this rule will be ignored.
+   *
+   * The content of each translation file will be converted to a key => value map.
+   *
+   * All translations will be loaded to a language => translations map, except the translations to the
+   * fallback language. This translation will be stored in a separated location.
+   *
+   * @param options object containing initialization parameters.
+   *
+   * @throws I18nError in case of the component is already initialized, in case of errors reading the
+   * content of the load path, in case of errors reading a translation file from disk, in case of any
+   * problem in any translation file format, in the case of the current configured language translation
+   * file was not found or in the case of the fallback language file was not found.
+   */
   public init(options: InitOptions): void {
 
+    // It's not possible initialize this component more then one time.
+    if (this._initialized) {
+      throw new I18nError(`The i18n engine is already initialized.`);
+    }
+
+    // Validate the options object and store it. The path normalization is to avoid problems in windows os.
     this.validateInitOptions(options);
-
     this._options = options;
-
     this._options.loadPath = path.normalize(this._options.loadPath);
+    if (this._options.lng) {
+      this._usingLanguage = this._options.lng;
+    }
 
+    // Read the list of all filenames in the load path.
     let fileList: string[];
-
     try {
       fileList = fs.readdirSync(this._options.loadPath);
       console.log(fileList);
@@ -61,21 +102,26 @@ class I18n {
       }
     }
 
-    fileList.forEach((fileName: string) => {
-      console.log(fileName);
-      const nameParts: string[] = fileName.split('.');
-      console.log(nameParts);
+    // The filenames will be split to an array. The index of each part is as below.
+    const BASE_FILENAME_INDEX = 0;
+    const LANGUAGE_ID_INDEX = 1;
+    const EXTENSION_INDEX = 2;
 
+    // Main loop. The translation files are loaded here.
+    fileList.forEach((fileName: string) => {
+
+      // Split the name of each file and run a basic check.
+      const nameParts: string[] = fileName.split('.');
       if((nameParts.length != 3) ||
-         (nameParts[2].toLocaleLowerCase() != 'json') ||
-         (nameParts[0].toLocaleLowerCase() != 'messages')
+         (nameParts[EXTENSION_INDEX] !== 'json') ||
+         (nameParts[BASE_FILENAME_INDEX] !== 'messages')
       ) {
         console.log(`The file ${fileName} is being ignored by the i18n engine.`);
         return;
       }
 
+      // Load a translation file from disk.
       let rawData: string;
-
       try{
         rawData = fs.readFileSync(path.join(this._options.loadPath, fileName), {encoding: 'utf8'});
       } catch (error) {
@@ -90,32 +136,46 @@ class I18n {
         }
       }
 
-      let messages: Map<string, string> = new Map();
-
+      // Verify if the translation file content is well formed.
       let obj = {};
-
       try {
         obj = JSON.parse(rawData);
       } catch (error) {
         throw new I18nError(`It was not possible to parse the messages file ${path.join(this._options.loadPath, fileName)}. It could be corrupted.`, error, 'PARSE_ERROR');
       }
 
-      messages = this.objectToMap(obj);
+      // Construct the map for the loaded file.
+      const messages: Map<string, string> = this.objectToMap(obj);
+      this._languagesLoaded.push(nameParts[LANGUAGE_ID_INDEX]);
 
-      console.log(messages);
+      // Store the translation map inside a language => "translation map" map, except for the fallback lang.
+      if (nameParts[LANGUAGE_ID_INDEX] !== this._options.fallbackLng) {
+        this._messagesLoaded.set(nameParts[LANGUAGE_ID_INDEX], messages);
+      } else {
+        this._fallBackMessages = messages;
+      }
 
-      this._languagesLoaded.push(nameParts[1]);
-
-      this._messagesLoaded.set(nameParts[1], messages);
+      // Current using this language.
+      if (nameParts[LANGUAGE_ID_INDEX] === this._usingLanguage) {
+        this._usingMessages = messages;
+      }
     });
 
-    console.log(this._messagesLoaded);
+    if (!this._usingMessages) {
+      throw new I18nError(`The translation file to the current configured language was not found.`);
+    }
+
+    if (!this._fallBackMessages) {
+      throw new I18nError(`The translation file to the fallback language was not found.`);
+    }
 
     this._initialized = true;
   }
 
   /**
    * Validate the values of the initialization object. In case of any error, throw an error object.
+   *
+   * This method provided default values to absent optional properties.
    *
    * @param options Initialization object to be validated.
    *
@@ -147,7 +207,7 @@ class I18n {
 
   /**
    * This is a recursive utility function to convert a json object containing the i18n translations to a
-   * key => value map.
+   * "key => value" map.
    *
    * The basic use case is when the json object is in the format below:
    *
@@ -183,22 +243,44 @@ class I18n {
    *
    * Observe the composition made in the key (i.e. key2.subKey2) in this case.
    *
-   * This behavior is obtained recursively calling this method. The subject is passed as the obj param,
+   * This behavior is obtained recursively calling this method. The object is passed as the obj param,
    * and the key containing the sub object (key2 in the example), is passed as the recursiveKey parameter.
    *
-   * @param obj
-   * @param recursiveKey
+   * This method can handle, theoretically, any depth of sub objects.
+   *
+   * The code that calls this method should only use the obj parameter. The recursiveKey parameter should be
+   * used by the recursive calls.
+   *
+   * @param obj json object containing the i18n translations for a determined language.
+   * @param recursiveKey a key from the object that contains a sub object. Projected to be used only for
+   * recursive calls.
    */
   private objectToMap(obj: {}, recursiveKey?: string | null): Map<string, string> {
 
     let map: Map<string, string> = new Map();
 
+    /* The construction "let key of Object.keys(obj)" causes an error in the TS transpiler, because
+     * the transpiler identify the type of the key object as string and cannot iterate over it. To
+     * solve this problem, the construction "as Array<keyof typeof obj>" provide a list of types,
+     * one for each field of the obj.
+     *
+     * In practice, this for iterate over all the field of the obj.
+     */
     for (let key of Object.keys(obj) as Array<keyof typeof obj>){
-      if (typeof obj[key] === 'string' ) {
+
+      if (typeof obj[key] === 'string' ) { // not a sub object.
+
+        // If this is a recursive call, compose the name of the key.
         recursiveKey ? map.set(`${recursiveKey}.${key}`, obj[key]) : map.set(key, obj[key]);
-      } else {
+
+      } else { // sub object.
+
+        // Recursive call.
         let subMab: Map<string, string> = this.objectToMap(obj[key], key);
+
         subMab.forEach((subValue: string, subKey: string) => {
+
+          // If this recursive call is made inside other recursive call, compose the name of the key.
           recursiveKey ? map.set(`${recursiveKey}.${subKey}`, subValue) : map.set(subKey, subValue);
         });
       }
