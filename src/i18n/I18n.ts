@@ -26,6 +26,9 @@ import { InvalidParameterError } from '../errors/InvalidParameterError';
 import { I18nError } from './I18nError';
 import { runInNewContext } from 'vm';
 
+/**
+ * i18n engine.
+ */
 class I18n {
 
   // Indicates that the component was initialized (all translations loaded).
@@ -254,6 +257,8 @@ class I18n {
    * @param obj json object containing the i18n translations for a determined language.
    * @param recursiveKey a key from the object that contains a sub object. Projected to be used only for
    * recursive calls.
+   *
+   * @returns A key => translation map constructed from the obj parameter.
    */
   private objectToMap(obj: {}, recursiveKey?: string | null): Map<string, string> {
 
@@ -287,6 +292,81 @@ class I18n {
     }
 
     return map;
+  }
+
+  /**
+   * Return a translation to a given key in the actual selected language.
+   *
+   * If no key, or an empty key is provided, this method returns an empty string.
+   *
+   * If the key translation were not found in the current set language, it will be looked into the
+   * fallback language. If the key were not found into the fallback language, so the value of the key is
+   * returned.
+   *
+   * @param key key used to search a translation inside the selected language.
+   *
+   * @returns The translation to the key in the current selected language, a empty string in case the key
+   * is empty, The translation to the key in the fallback language in the case the key were not found in the
+   * current selected language, the value of the key in the case the key were not found in the fallback
+   * language.
+   */
+  public t(key: string): string {
+
+    if (!this._initialized) {
+      throw new I18nError('The i18n engine was not initialized. Call the init method before using this service.');
+    }
+
+    if (_.isEmpty(key)) {
+      return '';
+    }
+
+    let translation: string | undefined = this._usingMessages.get(key);
+
+    if (!translation && this._usingLanguage !== this._options.fallbackLng) {
+      translation = this._fallBackMessages.get(key);
+    }
+
+    if (!translation) {
+      return key;
+    }
+
+    return translation;
+  }
+
+  /**
+   *
+   * @param languageId
+   */
+  public changeLanguage(languageId: string): void {
+
+    if (!this._initialized) {
+      throw new I18nError('The i18n engine was not initialized. Call the init method before using this service.');
+    }
+
+    if (_.isEmpty(languageId)) {
+      throw new InvalidParameterError('The languageId parameter must not be empty.');
+    }
+
+    if (this._languagesLoaded.indexOf(languageId) == -1) {
+      throw new I18nError(`The language ${languageId} was not loaded.`);
+    }
+
+    if (this._usingLanguage === languageId) {
+      return;
+    }
+
+    this._usingLanguage = languageId;
+
+    if (languageId !== this._options.fallbackLng) {
+      const messages = this._messagesLoaded.get(languageId);
+      if (messages) {
+        this._usingMessages = messages;
+      } else {
+        throw new I18nError(`The translations for the language ${languageId} were not found.`);
+      }
+    } else {
+      this._usingMessages = this._fallBackMessages;
+    }
   }
 
   get isInitialized(): boolean {
