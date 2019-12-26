@@ -20,7 +20,7 @@
 import { ErrorWrapper } from '../errors/ErrorWrapper';
 
 /**
- * Class to represent error from config file manipulation.
+ * Class to represent error from i18n engine.
  */
 export class I18nError extends ErrorWrapper {
   // Override

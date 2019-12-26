@@ -16,9 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with "server-arch".  If not, see <https://www.gnu.org/licenses/>.
  */
-import { app, dialog } from 'electron';
+import { app } from 'electron';
 
-import { ConfigFileError } from './../configFileManager/ConfigFileError';
 import { ConfigFileManager } from './../configFileManager/ConfigFileManager';
 import { ConfigData } from './ConfigData';
 import { envDetector } from '../environmentDetector/EnvironmentDetector';
@@ -27,15 +26,19 @@ import { InvalidPlatformError } from './InvalidPlatformError';
 
 /**
  * Super class, with basic functionalities, for app configuration classes.
- *
- * This class shows dialogs, so the main window must be initialized before its use.
  */
 export abstract class AppConfigurator <T extends ConfigData> {
 
-  protected cfm: ConfigFileManager<T>;
+  // ConfigFileManager created for the specific client app filetype.
+  protected _cfm: ConfigFileManager<T>;
 
+  // The json object with the specific app options. This is the content of the options file.
   protected _appOptions: T;
+
+  // Absolute path to the folder holding config files.
   protected _configFolder: string;
+
+  // Absolute path to the folder holding data files.
   protected _dataFolder: string;
 
   /**
@@ -108,27 +111,14 @@ export abstract class AppConfigurator <T extends ConfigData> {
           this._dataFolder = `${app.getPath('home')}/.local/share/${appName}`;
         }
       } else {
-        const error = new InvalidPlatformError();
-        dialog.showErrorBox(title, error.message);
-        throw error;
+        throw new InvalidPlatformError();
       }
     } else {
       this._configFolder = devConfigFolderPath;
       this._dataFolder = devDataFolderPath;
     }
 
-    try {
-      this.cfm = new ConfigFileManager<T>(configFileName, this._configFolder);
-    } catch (error) {
-
-      if ((error instanceof InvalidParameterError) || (error instanceof ConfigFileError)) {
-        dialog.showErrorBox(title, error.message);
-      } else {
-        this.unknownErrorDialog(title);
-      }
-
-      throw error;
-    }
+    this._cfm = new ConfigFileManager<T>(configFileName, this._configFolder);
   }
 
   /**
@@ -140,20 +130,13 @@ export abstract class AppConfigurator <T extends ConfigData> {
    *
    * This method should be overridden to execute specific configurations.
    *
-   * This method show a dialog box with an error message in case of errors.
-   *
    * @throws ConfigFileError in case of error interacting with the config file.
    */
   public doConfig(): void {
 
     let hasFile: boolean;
 
-    try {
-      hasFile = this.cfm.fileExist();
-    } catch (error) {
-      this.errorDialog(error);
-      throw error;
-    }
+    hasFile = this._cfm.fileExist();
 
     if (hasFile) {
       this.readConfigFile();
@@ -163,17 +146,12 @@ export abstract class AppConfigurator <T extends ConfigData> {
   }
 
   /**
-   * Reads the config file and show an error message in case of error.
+   * Reads the config file.
    *
    * @throws ConfigFileError in case of error interacting with the config file.
    */
   private readConfigFile(): void {
-    try {
-      this._appOptions = this.cfm.readFile();
-    } catch (error) {
-      this.errorDialog(error);
-      throw error;
-    }
+    this._appOptions = this._cfm.readFile();
   }
 
   /**
@@ -182,31 +160,10 @@ export abstract class AppConfigurator <T extends ConfigData> {
    */
   protected abstract createConfigFile(): void;
 
-  /**
-   * Show a dialog box with an error message extracted from the error parameter.
-   *
-   * This dialog uses 'Configuration Execution Error.' as title.
-   *
-   * @param error a ConfigFileError.
-   */
-  protected errorDialog(error: ConfigFileError): void {
-    dialog.showErrorBox('Configuration Execution Error.', error.message);
-  }
-
-  /**
-   * Show a error dialog box with a standard message for unexpected errors.
-   *
-   * @param title to be shown in the error dialog.
-   */
-  protected unknownErrorDialog(title: string): void {
-    dialog.showErrorBox(title, 'An unexpected error ocurred. ' +
-                            'To see the error details, run this application on terminal.');
-  }
-
   ///////////////////////////////////////////////////////////////////////
 
   get configFileManager(): ConfigFileManager<T> {
-    return this.cfm;
+    return this._cfm;
   }
 
   public get appOptions(): T {
