@@ -17,7 +17,7 @@
  * along with "server-arch".  If not, see <https://www.gnu.org/licenses/>.
  */
 
- export interface InitOptions {
+ export interface I18nInitOptions {
 
   /**
    * Language to use

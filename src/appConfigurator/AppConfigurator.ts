@@ -160,17 +160,4 @@ export abstract class AppConfigurator <T extends ConfigData> {
    */
   protected abstract createConfigFile(): void;
 
-  ///////////////////////////////////////////////////////////////////////
-
-  get configFileManager(): ConfigFileManager<T> {
-    return this._cfm;
-  }
-
-  public get appOptions(): T {
-    return this._appOptions;
-  }
-
-  public get configFolder() {
-    return this._configFolder;
-  }
 }

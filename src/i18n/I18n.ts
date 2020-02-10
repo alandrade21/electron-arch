@@ -21,7 +21,7 @@ import * as path from 'path';
 import * as _ from 'lodash';
 import * as fs from 'fs';
 
-import { InitOptions } from './InitOptions';
+import { I18nInitOptions } from './I18nInitOptions';
 import { InvalidParameterError } from '../errors/InvalidParameterError';
 import { I18nError } from './I18nError';
 import { runInNewContext } from 'vm';
@@ -35,7 +35,7 @@ class I18n {
   private _initialized: boolean = false;
 
   // Object used to initialize the component.
-  private _options: InitOptions;
+  private _options: I18nInitOptions;
 
   // List of language translations loaded.
   private _languagesLoaded: string[] = [];
@@ -73,7 +73,7 @@ class I18n {
    * problem in any translation file format, in the case of the current configured language translation
    * file was not found or in the case of the fallback language file was not found.
    */
-  public init(options: InitOptions): void {
+  public init(options: I18nInitOptions): void {
 
     // It's not possible initialize this component more then one time.
     if (this._initialized) {
@@ -185,7 +185,7 @@ class I18n {
    * @throws InvalidParameterError in caso of no initialization object passed.
    * @throws I18nError in case of validation error.
    */
-  private validateInitOptions(options: InitOptions): void {
+  private validateInitOptions(options: I18nInitOptions): void {
 
     if(!options) {
       throw new InvalidParameterError('The options object must be informed');

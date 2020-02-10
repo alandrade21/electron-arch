@@ -23,7 +23,7 @@ export * from './configFileManager/ConfigFileManager';
 export * from './dataBaseFileManager/DatabaseFileManager';
 export * from './environmentDetector/EnvironmentDetector';
 export * from './mainWindow/MainWindowController';
-export * from './i18n/InitOptions';
+export * from './i18n/I18nInitOptions';
 export * from './i18n/I18n';
 
 // Error classes.
