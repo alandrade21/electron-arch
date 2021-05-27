@@ -27,10 +27,11 @@ import { envDetector } from './../environmentDetector/EnvironmentDetector';
 import { UnexpectedError } from '../errors/UnexpectedError';
 
 /**
- * Class to encapsulate the main window initialization process and to grant static access to the
- * main window variable across the app.
+ * Class to encapsulate the main window initialization process and to grant 
+ * static access to the main window variable across the app.
  *
- * Implementation based on https://medium.com/@davembush/typescript-and-electron-the-right-way-141c2e15e4e1.
+ * Implementation based on 
+ * https://medium.com/@davembush/typescript-and-electron-the-right-way-141c2e15e4e1.
  */
 export class MainWindowController {
 

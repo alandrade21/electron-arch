@@ -64,7 +64,9 @@ This class provide a `consoleLog(): void` method that prints the error to the co
 console.log(`${this.className}. Message: ${this.message}. Error Type: ${this.type}. Original Error: ${this.error}`)
 ```
 
-The `className` is a protected variable that must be overridden in any child class. This variable must be initialized with the name of the Class. This is not obtained during runtime because the minification can change the class name.
+The `_className` is a protected field that must be overridden in any child class. This variable must be initialized with the name of the Class. This is not obtained during runtime because the minification can change the class name.
+
+The `_type` is another protected field created to act as as classifier string. It's value can be set in constructor but a more common use is to override this field in subclasses.
 
 ### InvalidPlatformError
 

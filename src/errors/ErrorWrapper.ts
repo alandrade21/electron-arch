@@ -25,8 +25,20 @@
  */
 export abstract class ErrorWrapper {
 
+  /**
+   * This field must be overridden in child classes and initialized with the name
+   * of this child class. The name of a class cannot be obtained in runtime
+   * because of a possible minification that alters the class name.
+   */
   protected _className = '';
 
+  /**
+   * 
+   * @param _message The message of this error.
+   * @param _error Optional. A throwable object thar caused this error.
+   * @param _type Optional. A string that classifies this error. Generally, this
+   * field is overridden in subclasses.
+   */
   constructor(protected _message: string,
               protected _error: Error | any | null = null,
               protected _type: string | null = null) {}
