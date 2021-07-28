@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 André Andrade - alandrade21@gmail.com
+ * Copyright (c) 2021 André Andrade - alandrade21@gmail.com
  *
  * This file is part of the "electron-arch" library.
  *
@@ -21,10 +21,12 @@ import { ErrorWrapper } from '../errors/ErrorWrapper';
 
 /**
  * Class to represent error from i18n engine.
+ * 
+ * @since 0.0.1
  */
 export class I18nError extends ErrorWrapper {
   // Override
-  protected _type = 'I18N_ERROR';
+  protected _classifier = 'I18N_ERROR';
 
   // Override
   protected _className = 'I18nError';

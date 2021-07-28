@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 André Andrade - alandrade21@gmail.com
+ * Copyright (c) 2021 André Andrade - alandrade21@gmail.com
  * 
  * This file is part of the "electron-arch" library.
  *
@@ -21,11 +21,13 @@ import { ErrorWrapper } from './ErrorWrapper';
 
 /**
  * Error class to represent a invalid use of a parameter.
+ * 
+ * @since 0.0.1
  */
 export class InvalidParameterError extends ErrorWrapper{
 
   // Override
-  protected _type = 'RUNTIME_ERROR';
+  protected _classifier = 'RUNTIME_ERROR';
 
   // Override
   protected _className = 'InvalidParameterError';

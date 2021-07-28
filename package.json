@@ -12,7 +12,7 @@
     "url": "https://github.com/alandrade21/electron-arch.git"
   },
   "keywords": [
-    "archtecture",
+    "architecture",
     "electron",
     "typescript"
   ],
@@ -21,8 +21,8 @@
     "build": "tsc"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.170",
-    "@types/mkdirp": "^1.0.1",
+    "@types/lodash": "^4.14.171",
+    "@types/mkdirp": "^1.0.2",
     "@types/node": "12.12.6",
     "core-js": "3.6.5",
     "electron": "11.2.0",
@@ -38,5 +38,11 @@
   "dependencies": {
     "lodash": "^4.17.21",
     "mkdirp": "^1.0.4"
-  }
+  },
+  "engines": {
+    "node": ">=12.11.1"
+  },
+  "browserslist": [
+    "chrome 83"
+  ]
 }

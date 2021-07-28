@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 André Andrade - alandrade21@gmail.com
+ * Copyright (c) 2021 André Andrade - alandrade21@gmail.com
  * 
  * This file is part of the "electron-arch" library.
  *
@@ -22,37 +22,44 @@
  * https://basarat.gitbooks.io/typescript/docs/types/exceptions.html.
  *
  * Create your own inheriting this class.
+ * 
+ * @since 0.0.1
  */
 export abstract class ErrorWrapper {
 
   /**
-   * This field must be overridden in child classes and initialized with the name
-   * of this child class. The name of a class cannot be obtained in runtime
+   * This field must be overridden in child classes and initialized with the
+   * child class name. The name of a class cannot be obtained in runtime
    * because of a possible minification that alters the class name.
+   * 
+   * @since 0.0.1
    */
   protected _className = '';
 
   /**
+   * Constructor
    * 
    * @param _message The message of this error.
-   * @param _error Optional. A throwable object thar caused this error.
-   * @param _type Optional. A string that classifies this error. Generally, this
-   * field is overridden in subclasses.
+   * @param _causedBy Optional. A throwable object thar caused this error.
+   * @param _classifier Optional. A string that classifies this error. Generally, 
+   * this field is overridden in subclasses.
+   * 
+   * @since 0.0.1
    */
   constructor(protected _message: string,
-              protected _error: Error | any | null = null,
-              protected _type: string | null = null) {}
+              protected _causedBy: Error | any | null = null,
+              protected _classifier: string | null = null) {}
 
   get message(): string {
     return this._message;
   }
 
-  get error(): Error | any | null {
-    return this._error;
+  get causedBy(): Error | any | null {
+    return this._causedBy;
   }
 
-  get type(): string | null {
-    return this._type;
+  get classifier(): string | null {
+    return this._classifier;
   }
 
   get className(): string {
@@ -61,8 +68,10 @@ export abstract class ErrorWrapper {
 
   /**
    * Method to console print an error of this type, identifying the type.
+   * 
+   * @since 0.0.1
    */
   public consoleLog(): void {
-    console.log(`${this.className}. Message: ${this.message}. Error Type: ${this.type}. Original Error: ${this.error}`);
+    console.log(`${this.className}. Message: ${this.message}. Error Type: ${this.classifier}. Original Error: ${this.causedBy}`);
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 André Andrade - alandrade21@gmail.com
+ * Copyright (c) 2021 André Andrade - alandrade21@gmail.com
  * 
  * This file is part of the "electron-arch" library.
  *
@@ -19,9 +19,15 @@
 
 import { ErrorWrapper } from '../errors/ErrorWrapper';
 
+/**
+ * Error generated if the programmer tries to access the main window before it is 
+ * initialized
+ * 
+ * @since 0.0.1
+ */
 export class MainWindowNotInitializedError extends ErrorWrapper {
   // Override
-  protected _type = 'INIT_ERROR';
+  protected _classifier = 'INIT_ERROR';
 
   // Override
   protected _className = 'MainWindowNotInitializedError';

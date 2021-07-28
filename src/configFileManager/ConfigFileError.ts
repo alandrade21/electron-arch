@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 André Andrade - alandrade21@gmail.com
+ * Copyright (c) 2021 André Andrade - alandrade21@gmail.com
  * 
  * This file is part of the "electron-arch" library.
  *
@@ -21,10 +21,13 @@ import { ErrorWrapper } from '../errors/ErrorWrapper';
 
 /**
  * Class to represent error from config file manipulation.
+ * 
+ * @since 0.0.1
  */
 export class ConfigFileError extends ErrorWrapper {
+  // This classifier is commonly overwritten with the file system error code.
   // Override
-  protected _type = 'FS_ERROR';
+  protected _classifier = 'FS_ERROR';
 
   // Override
   protected _className = 'ConfigFileError';
