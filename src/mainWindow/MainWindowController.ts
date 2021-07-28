@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 André Andrade - alandrade21@gmail.com
+ * Copyright (c) 2021 André Andrade - alandrade21@gmail.com
  * 
  * This file is part of the "electron-arch" library.
  *
@@ -32,28 +32,34 @@ import { UnexpectedError } from '../errors/UnexpectedError';
  *
  * Implementation based on 
  * https://medium.com/@davembush/typescript-and-electron-the-right-way-141c2e15e4e1.
+ * 
+ * @since 0.0.1
  */
 export class MainWindowController {
 
-  private static win: BrowserWindow | null;
+  private static _mainWindow: BrowserWindow | null;
   private static args = process.argv.slice(1);
   private static serve: boolean = MainWindowController.args.some(val => val === '--serve');
 
   /**
-   * Public access method to the main window.
+   * Public static access method to the main window.
    *
-   * If the main window were not initialized, this method throw an
-   * MainWindowNotInitializedError.
+   * @throws MainWindowNotInitializedError If the main window were not 
+   * initialized.
+   * 
+   * @since 0.0.1
    */
   public static get mainWindow(): BrowserWindow {
-    if (!MainWindowController.win) {
+    if (!MainWindowController._mainWindow) {
       throw new MainWindowNotInitializedError();
     }
-    return MainWindowController.win;
+    return MainWindowController._mainWindow;
   }
 
   /**
    * Initializes the main window.
+   * 
+   * @since 0.0.1
    */
   private static createWindow(): void {
 
@@ -61,7 +67,7 @@ export class MainWindowController {
     const size = electronScreen.getPrimaryDisplay().workAreaSize;
 
     // Create the browser window.
-    MainWindowController.win = new BrowserWindow({
+    MainWindowController._mainWindow = new BrowserWindow({
       x: 0,
       y: 0,
       width: size.width,
@@ -77,10 +83,10 @@ export class MainWindowController {
       require('electron-reload')(process.cwd(), {
         electron: require(`${process.cwd()}/node_modules/electron`)
       });
-      MainWindowController.win.loadURL('http://localhost:4200');
+      MainWindowController._mainWindow.loadURL('http://localhost:4200');
     } else {
       console.log(process.cwd());
-      MainWindowController.win.loadURL(url.format({
+      MainWindowController._mainWindow.loadURL(url.format({
         pathname: path.join(process.cwd(), 'dist/index.html'),
         protocol: 'file:',
         slashes: true
@@ -88,15 +94,15 @@ export class MainWindowController {
     }
 
     if (envDetector.isDev()) {
-      MainWindowController.win.webContents.openDevTools();
+      MainWindowController._mainWindow.webContents.openDevTools();
     }
 
     // Emitted when the window is closed.
-    MainWindowController.win.on('closed', () => {
+    MainWindowController._mainWindow.on('closed', () => {
       // Dereference the window object, usually you would store window
       // in an array if your app supports multi windows, this is the time
       // when you should delete the corresponding element.
-      this.win = null;
+      this._mainWindow = null;
     });
   }
 
@@ -107,7 +113,11 @@ export class MainWindowController {
    */
   public static initialize(): void {
 
-    if (MainWindowController.win) {
+    if (!app.isReady()) {
+      // TODO /Terminar essa lógica
+    }
+
+    if (MainWindowController._mainWindow) {
       throw new MainWindowAlreadyInitializedError();
     }
 
@@ -127,7 +137,7 @@ export class MainWindowController {
       app.on('activate', () => {
         // On OS X it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
-        if (!MainWindowController.win) {
+        if (!MainWindowController._mainWindow) {
           MainWindowController.createWindow();
         }
       });

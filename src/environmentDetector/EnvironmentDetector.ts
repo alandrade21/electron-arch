@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 André Andrade - alandrade21@gmail.com
+ * Copyright (c) 2021 André Andrade - alandrade21@gmail.com
  * 
  * This file is part of the "electron-arch" library.
  *
@@ -39,16 +39,20 @@ import { app } from 'electron';
  *
  * So, please, be careful with this and, case you have a "production" version 
  * installed, do a backup before start development, just in case. ;)
+ * 
+ * @since 0.0.1
  */
 class EnvironmentDetector {
-  private env: string | undefined;
+  //private env: string | undefined;
 
-  constructor() {
-    this.env = process.env.ELECTRON_ENV;
-  }
+  // constructor() {
+  //   this.env = process.env.ELECTRON_ENV;
+  // }
+
+  // TODO testar remoção da variável de ambiente
 
   public isDev(): boolean {
-    return this.env === 'dev';
+    return !app.isPackaged;
   }
 
   /**
@@ -66,6 +70,7 @@ class EnvironmentDetector {
     console.log('os.homedir: ', os.homedir());
     console.log('os.platform: ', os.platform());
     console.log('os.userInfo:', os.userInfo());
+    console.log('electron.app.isPackaged ', app.isPackaged);
     console.log('electron.app.getPath("home") ', app.getPath('home'));
     console.log('electron.app.getPath("appData") ', app.getPath('appData'));
     console.log('electron.app.getPath("userData") ', app.getPath('userData'));
