@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 André Andrade - alandrade21@gmail.com
+ * Copyright (c) 2021 André Andrade - alandrade21@gmail.com
  *
  * This file is part of the "electron-arch" library.
  *
@@ -28,11 +28,13 @@ import { InvalidParameterError } from './../errors/InvalidParameterError';
 import { ConfigFileError } from './ConfigFileError';
 
 /**
- * This class is responsible to manipulate a config file. This class should be instantiated
- * identifying the concrete implementation of the config data.
+ * This class is responsible to manipulate a config file. This class should be 
+ * instantiated identifying the concrete implementation of the config data.
  *
- * It was created based on the work of Juan Cruz Viotti on electron-json-storage project
- * (https://github.com/electron-userland/electron-json-storage).
+ * It was created based on the work of Juan Cruz Viotti on electron-json-storage 
+ * project (https://github.com/electron-userland/electron-json-storage).
+ * 
+ * @since 0.0.1
  */
 export class ConfigFileManager<T extends ConfigData> {
 

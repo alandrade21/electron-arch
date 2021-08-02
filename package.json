@@ -18,7 +18,8 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "build": "tsc",
+    "npm": "npm"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.171",

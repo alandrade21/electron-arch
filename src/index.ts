@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 André Andrade - alandrade21@gmail.com
+ * Copyright (c) 2021 André Andrade - alandrade21@gmail.com
  *
  * This file is part of the "electron-arch" library.
  *
@@ -19,20 +19,27 @@
 
 export * from './appConfigurator/AppConfigurator';
 export * from './appConfigurator/ConfigData';
-export * from './configFileManager/ConfigFileManager';
-export * from './dataBaseFileManager/DatabaseFileManager';
-export * from './environmentDetector/EnvironmentDetector';
-export * from './mainWindow/MainWindowController';
-export * from './i18n/I18nInitOptions';
-export * from './i18n/I18n';
+export * from './appConfigurator/InvalidPlatformError';
 
-// Error classes.
+export * from './configFileManager/ConfigFileManager';
+export * from './configFileManager/ConfigFileError';
+
+export * from './dataBaseFileManager/DatabaseFileManager';
+export * from './dataBaseFileManager/DatabaseFileError';
+
+export * from './environmentHelper/EnvironmentHelper';
+
 export * from './errors/ErrorWrapper';
 export * from './errors/InvalidParameterError';
 export * from './errors/UnexpectedError';
-export * from './configFileManager/ConfigFileError';
+export * from './errors/AppNotReadyError';
+
+export * from './i18n/I18nInitOptions';
+export * from './i18n/I18n';
+export * from './i18n/I18nError';
+
+export * from './mainWindow/MainWindowController';
 export * from './mainWindow/MainWindowAlreadyInitializedError';
 export * from './mainWindow/MainWindowNotInitializedError';
-export * from './appConfigurator/InvalidPlatformError';
-export * from './dataBaseFileManager/DatabaseFileError';
-export * from './i18n/I18nError';
+export * from './mainWindow/MainWindowPosition';
+

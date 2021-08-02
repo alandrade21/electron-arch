@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 André Andrade - alandrade21@gmail.com
+ * Copyright (c) 2021 André Andrade - alandrade21@gmail.com
  *
  * This file is part of the "electron-arch" library.
  *
@@ -20,19 +20,23 @@ import { app } from 'electron';
 
 import { ConfigFileManager } from './../configFileManager/ConfigFileManager';
 import { ConfigData } from './ConfigData';
-import { envDetector } from '../environmentDetector/EnvironmentDetector';
+import { envHelper } from '../environmentHelper/EnvironmentHelper';
 import { InvalidParameterError } from '../errors/InvalidParameterError';
 import { InvalidPlatformError } from './InvalidPlatformError';
 
 /**
  * Super class, with basic functionalities, for app configuration classes.
+ * 
+ * @since 0.0.1
  */
 export abstract class AppConfigurator <T extends ConfigData> {
 
   // ConfigFileManager created for the specific client app filetype.
   protected _cfm: ConfigFileManager<T>;
 
-  // The json object with the specific app options. This is the content of the options file.
+  /* The json object with the specific app options. This is the content of the 
+   * options file. 
+   */
   protected _appOptions: T;
 
   // Absolute path to the folder holding config files.
@@ -42,23 +46,32 @@ export abstract class AppConfigurator <T extends ConfigData> {
   protected _dataFolder: string;
 
   /**
-   * This constructor verifies which is the user's OS, and choses the config and data folders
-   * accordingly.
+   * This constructor verifies which is the user's OS, and choses the config and 
+   * data folders accordingly.
    *
-   * If the environment is development, the config and data folders are set to the value informed
-   * in the devConfigFolderPath and devDataFolderPath parameters.
+   * If the environment is development, the config and data folders are set to 
+   * the value informed in the devConfigFolderPath and devDataFolderPath 
+   * parameters.
+   * 
+   * This is made to allow a "production" version to run in the same 
+   * machine used to development, preserving the production database and 
+   * configuration files.
+   * 
+   * The environment is identified as development if app.isPackaged return false.
    *
-   * If the environment is not development and the OS is windows, the config folder is set to the
-   * folder .config inside the app installation folder, and the data folder is set to the folder
-   * .data inside the app installation folder.
+   * If the environment is not development and the OS is windows, the config 
+   * folder is set to the .config folder inside the app installation folder, and 
+   * the data folder is set to the .data folder inside the app installation 
+   * folder.
    *
    * If the environment is not development and the OS is Linux, the config
-   * folder is set to the folder .config/<<appName>>/ inside the actual OS user's home folder, and
-   * the data folder is set to the folder .local/share/<<appName>>/ inside the actual OS user's
-   * home folder.
+   * folder is set to the .config/<<appName>>/ folder inside the actual OS user's 
+   * home folder, and the data folder is set to the .local/share/<<appName>>/ 
+   * folder inside the actual OS user's home folder.
    *
-   * If the OS is macOS, the config and data folders are set to the folder
-   * Library/Application Support/<<aapName>>/ inside the actual OS user's home folder.
+   * If the OS is macOS, the config and data folders are set to the 
+   * Library/Application Support/<<aapName>>/ folder inside the actual OS user's 
+   * home folder.
    *
    * This constructor uses this information to configure a ConfigFileManager.
    *
@@ -98,7 +111,7 @@ export abstract class AppConfigurator <T extends ConfigData> {
 
     const title = `${appName} Initialization Error`;
 
-    if (!envDetector.isDev()) {
+    if (app.isPackaged) {
       if (process.platform === 'win32') {
         this._configFolder = `${process.cwd()}/.config`;
         this._dataFolder = `${process.cwd()}/.data`;

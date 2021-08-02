@@ -23,8 +23,9 @@ import * as url from 'url';
 
 import { MainWindowNotInitializedError } from './MainWindowNotInitializedError';
 import { MainWindowAlreadyInitializedError } from './MainWindowAlreadyInitializedError';
-import { envDetector } from './../environmentDetector/EnvironmentDetector';
 import { UnexpectedError } from '../errors/UnexpectedError';
+import { AppNotReadyError } from './../errors/AppNotReadyError';
+import { MainWindowPosition } from './MainWindowPosition';
 
 /**
  * Class to encapsulate the main window initialization process and to grant 
@@ -39,7 +40,8 @@ export class MainWindowController {
 
   private static _mainWindow: BrowserWindow | null;
   private static args = process.argv.slice(1);
-  private static serve: boolean = MainWindowController.args.some(val => val === '--serve');
+  private static serve: boolean = 
+    MainWindowController.args.some(val => val === '--serve');
 
   /**
    * Public static access method to the main window.
@@ -61,40 +63,45 @@ export class MainWindowController {
    * 
    * @since 0.0.1
    */
-  private static createWindow(): void {
-
-    const electronScreen = screen;
-    const size = electronScreen.getPrimaryDisplay().workAreaSize;
+  private static createWindow(pos: MainWindowPosition): void {
 
     // Create the browser window.
     MainWindowController._mainWindow = new BrowserWindow({
-      x: 0,
-      y: 0,
-      width: size.width,
-      height: size.height,
+      x: pos.x,
+      y: pos.y,
+      width: pos.width,
+      height: pos.height,
       webPreferences: {
         nodeIntegration: true,
       },
       show: false
     });
 
-    if (envDetector.isDev() && MainWindowController.serve) {
+    if (!app.isPackaged) {
       console.log(process.cwd());
       require('electron-reload')(process.cwd(), {
         electron: require(`${process.cwd()}/node_modules/electron`)
       });
-      MainWindowController._mainWindow.loadURL('http://localhost:4200');
+
+      if (MainWindowController.serve) {
+        MainWindowController.mainWindow.loadURL('http://localhost:4200');
+      } else {
+        // TODO testar
+        MainWindowController.mainWindow.loadURL(url.format({
+          pathname: path.join(process.cwd(), 'dist/index.html'),
+          protocol: 'file:',
+          slashes: true
+        }));
+      }
+
+      MainWindowController.mainWindow.webContents.openDevTools();
     } else {
       console.log(process.cwd());
-      MainWindowController._mainWindow.loadURL(url.format({
+      MainWindowController.mainWindow.loadURL(url.format({
         pathname: path.join(process.cwd(), 'dist/index.html'),
         protocol: 'file:',
         slashes: true
       }));
-    }
-
-    if (envDetector.isDev()) {
-      MainWindowController._mainWindow.webContents.openDevTools();
     }
 
     // Emitted when the window is closed.
@@ -111,10 +118,10 @@ export class MainWindowController {
    *
    * This methods should be called only after app.on('ready').
    */
-  public static initialize(): void {
+  public static initialize(pos: MainWindowPosition): void {
 
     if (!app.isReady()) {
-      // TODO /Terminar essa lógica
+      throw new AppNotReadyError();
     }
 
     if (MainWindowController._mainWindow) {
@@ -123,7 +130,7 @@ export class MainWindowController {
 
     try {
 
-      MainWindowController.createWindow();
+      MainWindowController.createWindow(pos);
 
       // Quit when all windows are closed.
       app.on('window-all-closed', () => {
@@ -134,15 +141,18 @@ export class MainWindowController {
         }
       });
 
-      app.on('activate', () => {
-        // On OS X it's common to re-create a window in the app when the
-        // dock icon is clicked and there are no other windows open.
-        if (!MainWindowController._mainWindow) {
-          MainWindowController.createWindow();
-        }
-      });
+      // TODO testar como OSX se comporta sem isso.
+      // TODO mover isso para o cliente?
+      // app.on('activate', () => {
+      //   // On OS X it's common to re-create a window in the app when the
+      //   // dock icon is clicked and there are no other windows open.
+      //   if (!MainWindowController._mainWindow) {
+      //     MainWindowController.createWindow();
+      //   }
+      // });
     } catch (e) {
-      throw new UnexpectedError('Unexpected error during main window initialization', e);
+      throw new UnexpectedError(
+        'Unexpected error during main window initialization', e);
     }
   }
 }
