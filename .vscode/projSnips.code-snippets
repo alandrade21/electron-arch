@@ -15,7 +15,7 @@
 	// 	],
 	// 	"description": "Log output to console"
 	// }
-  "Copyright js": {
+  "electron-arch Copyright js": {
     "scope": "javascript,typescript",
     "prefix": ["lic", "cr", "Copyright"],
     "body": [
@@ -38,6 +38,6 @@
       "* along with \"electron-arch\". If not, see <https://www.gnu.org/licenses/>.",
       "*/"
     ],
-    "description": "Cabeçalho para arquivos ts e js."
+    "description": "electron-arch - Cabeçalho para arquivos ts e js."
   }
 }

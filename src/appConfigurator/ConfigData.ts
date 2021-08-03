@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 André Andrade - alandrade21@gmail.com
+ * Copyright (c) 2021 André Andrade - alandrade21@gmail.com
  * 
  * This file is part of the "electron-arch" library.
  *
@@ -14,13 +14,15 @@
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with "electron-arch".  If not, see <https://www.gnu.org/licenses/>.
+ * along with "electron-arch". If not, see <https://www.gnu.org/licenses/>.
  */
 
 /**
  * Interface to be implemented by all configuration file concrete implementations.
  * 
  * It is used, by means of type safety, in the ConfigFileManager.
+ * 
+ * @since 0.0.1
  */
 export interface ConfigData {
   

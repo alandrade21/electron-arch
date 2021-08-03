@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with "electron-arch".  If not, see <https://www.gnu.org/licenses/>.
+ * along with "electron-arch". If not, see <https://www.gnu.org/licenses/>.
  */
 
 // import { app } from 'electron';
@@ -42,14 +42,16 @@ export class ConfigFileManager<T extends ConfigData> {
   private _filePath: string;
 
   /**
-   * This constructor uses the rules implemented on the setter methods to set the received values.
+   * This constructor uses the rules implemented on the setter methods to set 
+   * the received values.
    *
-   * @param fileName The name of the config file, preferably with no extension. The .json
-   * extension will be used.
+   * @param fileName The name of the config file, preferably with no extension. 
+   * The .json extension will be used.
    * @param filePath The path to the config file. This must be an absolute path.
    *
    * @throws InvalidParameterError if the fileName or filePath is empty.
-   * @throws ConfigFileError if the fileName is malformed or the filePath is not an absolute path.
+   * @throws ConfigFileError if the fileName is malformed or the filePath is 
+   * not an absolute path.
    */
   constructor(
     fileName: string,
@@ -72,34 +74,42 @@ export class ConfigFileManager<T extends ConfigData> {
       if (error.code === 'ENOENT') {
         return false;
       }
-      const msg = `An error occurred verifying the configuration file ${path.join(this.filePath, this.fileName)} existence.`;
+      const msg = 
+        `An error occurred verifying the configuration file ${path.join(this.filePath, this.fileName)} existence.`;
 
       if (error.code === 'EPERM') {
-        throw new ConfigFileError(`${msg} There was a permission problem.`, error, 'EPERM');
+        throw new ConfigFileError(`${msg} There was a permission problem.`, 
+                                  error, 'EPERM');
       }
-      throw new ConfigFileError(`${msg} Unexpected problem.`, error, (error.code ? error.code : null));
+      throw new ConfigFileError(`${msg} Unexpected problem.`, error, 
+                                (error.code ? error.code : null));
     }
   }
 
   /**
-   * Reads the configuration file and returns an object of the concrete type representing the configuration
-   * options.
+   * Reads the configuration file and returns an object of the concrete type 
+   * representing the configuration options.
    *
    * @throws ConfigFileError if the is any problem reading the file.
    */
   public readFile(): T {
     let rawData: string;
     try {
-      rawData = fs.readFileSync(path.join(this.filePath, this.fileName), {encoding: 'utf8'});
+      rawData = fs.readFileSync(path.join(this.filePath, this.fileName), 
+                                {encoding: 'utf8'});
     } catch (error) {
-      const msg = `An error occurred reading the configuration file ${path.join(this.filePath, this.fileName)}.`;
+      const msg = 
+        `An error occurred reading the configuration file ${path.join(this.filePath, this.fileName)}.`;
 
       if (error.code === 'ENOENT') {
-        throw new ConfigFileError(`${msg} The config file does not exist.`, error, error.code);
+        throw new ConfigFileError(`${msg} The config file does not exist.`, 
+                                  error, error.code);
       } else if (error.code === 'EPERM') {
-        throw new ConfigFileError(`${msg} There was a permission problem.`, error, error.code);
+        throw new ConfigFileError(`${msg} There was a permission problem.`, 
+                                  error, error.code);
       } else {
-        throw new ConfigFileError(`${msg} Unexpected problem.`, error, (error.code ? error.code : null));
+        throw new ConfigFileError(`${msg} Unexpected problem.`, error, 
+                                  (error.code ? error.code : null));
       }
     }
 
@@ -107,9 +117,10 @@ export class ConfigFileManager<T extends ConfigData> {
     try {
       data = JSON.parse(rawData);
     } catch (error) {
-
       // TODO implement a method to recreate the config file via initialization parameter.
-      throw new ConfigFileError(`It was not possible to read the configuration file ${path.join(this.filePath, this.fileName)}. It could be corrupted.`, error, 'PARSE_ERROR');
+      throw new ConfigFileError(
+        `It was not possible to read the configuration file ${path.join(this.filePath, this.fileName)}. It could be corrupted.`, 
+        error, 'PARSE_ERROR');
     }
 
     return data;
@@ -139,19 +150,25 @@ export class ConfigFileManager<T extends ConfigData> {
     try {
       mkdirp.sync(this.filePath);
     } catch (error) {
-      throw new ConfigFileError(`It was not possible to create the directory ${this.filePath} for the config file.`, error, (error.code ? error.code : null));
+      throw new ConfigFileError(
+        `It was not possible to create the directory ${this.filePath} for the config file.`, 
+        error, (error.code ? error.code : null));
     }
 
     // Write the file
     try {
-      fs.writeFileSync(path.join(this.filePath, this.fileName), jsonData, {encoding: 'utf8'});
+      fs.writeFileSync(path.join(this.filePath, this.fileName), 
+      jsonData, 
+      {encoding: 'utf8'});
     } catch (error) {
       const msg = `An error occurred writing the configuration file ${path.join(this.filePath, this.fileName)}.`;
 
       if (error.code === 'EPERM') {
-        throw new ConfigFileError(`${msg} There was a permission problem.`, error, error.code);
+        throw new ConfigFileError(`${msg} There was a permission problem.`, 
+                                  error, error.code);
       } else {
-        throw new ConfigFileError(`${msg} Unexpected problem.`, error, (error.code ? error.code : null));
+        throw new ConfigFileError(`${msg} Unexpected problem.`, error, 
+                                  (error.code ? error.code : null));
       }
     }
   }
@@ -163,14 +180,16 @@ export class ConfigFileManager<T extends ConfigData> {
   }
 
   /**
-   * The parameter fileName cannot be empty, or cannot have only an extension (or a filename
-   * started by a dot).
+   * The parameter fileName cannot be empty, or cannot have only an extension 
+   * (or a filename started by a dot).
    *
-   * The fileName will be encoded as a URI, to avoid problems with the file system.
+   * The fileName will be encoded as a URI, to avoid problems with the file 
+   * system.
    *
-   * The config file, when created, will have the .json extension. If the fileName is provided with
-   * a .json extension, the file will not be created as .json.json. But if another extension is
-   * provided, like .txt, the file will be created as .txt.json.
+   * The config file, when created, will have the .json extension. If the 
+   * fileName is provided with a .json extension, the file will not be created 
+   * as .json.json. But if another extension is provided, like .txt, the file 
+   * will be created as .txt.json.
    *
    * @throws InvalidParameterError if the filename is empty.
    * @throws ConfigFileError if the filename is malformed.
@@ -186,7 +205,7 @@ export class ConfigFileManager<T extends ConfigData> {
 
     // If after removing the extension the filename is empty.
     if (_.isEmpty(fileWithNoExt)) {
-      throw new ConfigFileError('The fileName was not corrected formed.');
+      throw new ConfigFileError('The fileName was not well formed.');
     }
 
     // Prevent ENOENT and other similar errors when using

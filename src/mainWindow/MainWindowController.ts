@@ -1,3 +1,4 @@
+import { InvalidParameterError } from './../errors/InvalidParameterError';
 /*
  * Copyright (c) 2021 André Andrade - alandrade21@gmail.com
  * 
@@ -61,9 +62,17 @@ export class MainWindowController {
   /**
    * Initializes the main window.
    * 
+   * @param pos Object containing the position and size of the new window.
+   * 
+   * @throws InvalidParameterError if the pos parameter is null.
+   * 
    * @since 0.0.1
    */
   private static createWindow(pos: MainWindowPosition): void {
+
+    if (!pos) {
+      throw new InvalidParameterError('The pos parameter must be informed.');
+    }
 
     // Create the browser window.
     MainWindowController._mainWindow = new BrowserWindow({

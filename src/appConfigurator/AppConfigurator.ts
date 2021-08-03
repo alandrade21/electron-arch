@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with "electron-arch".  If not, see <https://www.gnu.org/licenses/>.
  */
+
 import { app } from 'electron';
 
 import { ConfigFileManager } from './../configFileManager/ConfigFileManager';
 import { ConfigData } from './ConfigData';
-import { envHelper } from '../environmentHelper/EnvironmentHelper';
 import { InvalidParameterError } from '../errors/InvalidParameterError';
 import { InvalidPlatformError } from './InvalidPlatformError';
 
@@ -31,7 +31,7 @@ import { InvalidPlatformError } from './InvalidPlatformError';
  */
 export abstract class AppConfigurator <T extends ConfigData> {
 
-  // ConfigFileManager created for the specific client app filetype.
+  // ConfigFileManager created for the client app specific config file.
   protected _cfm: ConfigFileManager<T>;
 
   /* The json object with the specific app options. This is the content of the 
@@ -94,7 +94,9 @@ export abstract class AppConfigurator <T extends ConfigData> {
    * @throws InvalidPlatformError if the platform running the app were nor win32, linux or darwin.
    * @throws ConfigFileError if the configFileName is malformed.
    */
-  constructor(appName: string, devConfigFolderPath: string, devDataFolderPath: string,
+  constructor(appName: string, 
+              devConfigFolderPath: string, 
+              devDataFolderPath: string,
               configFileName: string = 'config') {
 
     if (!appName) {
