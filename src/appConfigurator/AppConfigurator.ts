@@ -49,50 +49,56 @@ export abstract class AppConfigurator <T extends ConfigData> {
    * This constructor verifies which is the user's OS, and choses the config and 
    * data folders accordingly.
    *
-   * If the environment is development, the config and data folders are set to 
-   * the value informed in the devConfigFolderPath and devDataFolderPath 
-   * parameters.
+   * If the environment is development (app.isPackaged returns false), the config 
+   * and data folders are set to the value informed in the devConfigFolderPath 
+   * and devDataFolderPath parameters.
    * 
    * This is made to allow a "production" version to run in the same 
    * machine used to development, preserving the production database and 
    * configuration files.
    * 
-   * The environment is identified as development if app.isPackaged return false.
+   * As said, the environment is identified as development if app.isPackaged 
+   * return false.
    *
    * If the environment is not development and the OS is windows, the config 
-   * folder is set to the .config folder inside the app installation folder, and 
-   * the data folder is set to the .data folder inside the app installation 
+   * folder is set to the .config directory inside the app installation folder, 
+   * and the data folder is set to the .data directory inside the app installation 
    * folder.
    *
    * If the environment is not development and the OS is Linux, the config
-   * folder is set to the .config/<<appName>>/ folder inside the actual OS user's 
-   * home folder, and the data folder is set to the .local/share/<<appName>>/ 
-   * folder inside the actual OS user's home folder.
+   * folder is set to the .config/<<appName>>/ directory inside the actual OS 
+   * user's home folder, and the data folder is set to the 
+   * .local/share/<<appName>>/ directory inside the actual OS user's home folder.
    *
-   * If the OS is macOS, the config and data folders are set to the 
-   * Library/Application Support/<<aapName>>/ folder inside the actual OS user's 
-   * home folder.
+   * If the environment is not development and the OS is macOS, the config and 
+   * data folders are set to the Library/Application Support/<<aapName>>/ 
+   * directory inside the actual OS user's home folder.
    *
    * This constructor uses this information to configure a ConfigFileManager.
    *
-   * @param appName Name of the app being configured. This name will be used to create a folder
-   * structure to host the configuration file.
+   * @param appName Name of the app being configured. This name will be used to 
+   * create a folder structure to host the configuration file.
    *
-   * @param devConfigFolderPath Absolute path to the development data folder structure. This structure
-   * is a copy of the system folders that will be used during production. For more info, see
+   * @param devConfigFolderPath Absolute path to the development data folder 
+   * structure. This structure is a copy of the system folders that will be used 
+   * during production. For more info, see 
    * https://github.com/alandrade21/devTestFolders.
    *
-   * @param devDataFolderPath Absolute path to the development data folder structure. This structure
-   * is a copy of the system folders that will be used during production. For more info, see
+   * @param devDataFolderPath Absolute path to the development data folder 
+   * structure. This structure is a copy of the system folders that will be used 
+   * during production. For more info, see
    * https://github.com/alandrade21/devTestFolders.
    *
-   * @param configFileName Name of the configuration file to be used. This file will have the .json
-   * extension.
+   * @param configFileName Name of the configuration file to be used. This file 
+   * will have the .json extension.
    *
-   * @throws InvalidParameterError if the appName, devConfigFolderPath or devDataFolderPath
-   * is empty.
-   * @throws InvalidPlatformError if the platform running the app were nor win32, linux or darwin.
+   * @throws InvalidParameterError if the appName, devConfigFolderPath or 
+   * devDataFolderPath is empty.
+   * @throws InvalidPlatformError if the platform running the app were nor win32, 
+   * linux or darwin.
    * @throws ConfigFileError if the configFileName is malformed.
+   * 
+   * @since 0.0.1
    */
   constructor(appName: string, 
               devConfigFolderPath: string, 
@@ -110,8 +116,6 @@ export abstract class AppConfigurator <T extends ConfigData> {
     if (!devDataFolderPath) {
       throw new InvalidParameterError('The devDataFolderPath parameter must be informed');
     }
-
-    const title = `${appName} Initialization Error`;
 
     if (app.isPackaged) {
       if (process.platform === 'win32') {
@@ -139,19 +143,19 @@ export abstract class AppConfigurator <T extends ConfigData> {
   /**
    * Method to start the app configuration.
    *
-   * This super class execute the existence check of the config file. If it exists, the file is
-   * read and the options object is initialized. If it not exists, the method that creates the config
-   * file is called.
+   * This super class execute the existence check of the config file. If it 
+   * do exist, the file is read and the options object is initialized. If it 
+   * does not exist, the method that creates the config file is called.
    *
    * This method should be overridden to execute specific configurations.
    *
    * @throws ConfigFileError in case of error interacting with the config file.
+   * 
+   * @since 0.0.1
    */
   public doConfig(): void {
 
-    let hasFile: boolean;
-
-    hasFile = this._cfm.fileExist();
+    let hasFile: boolean = this._cfm.fileExist();
 
     if (hasFile) {
       this.readConfigFile();
@@ -164,14 +168,19 @@ export abstract class AppConfigurator <T extends ConfigData> {
    * Reads the config file.
    *
    * @throws ConfigFileError in case of error interacting with the config file.
+   * 
+   * @since 0.0.1
    */
   private readConfigFile(): void {
     this._appOptions = this._cfm.readFile();
   }
 
   /**
-   * The implementation of this method should initialize an options object with its initial value and
-   * write it to the disk using the ConfigFileManager instance created by this super class.
+   * The implementation of this method should initialize an options object with 
+   * its initial value and write it to the disk using the ConfigFileManager 
+   * instance created by this super class.
+   * 
+   * @since 0.0.1
    */
   protected abstract createConfigFile(): void;
 
