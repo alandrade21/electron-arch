@@ -4,8 +4,12 @@
   "description": "Lib with common code used by electron projects.",
   "homepage": "https://github.com/alandrade21/electron-arch",
   "main": "./dist/index.js",
+  "private": true,
   "types": "./dist/index.d.ts",
-  "author": "André Andrade <alandrade21@gmail.com> (https://github.com/alandrade21)",
+  "author": {
+    "name": "André Andrade",
+    "email": "alandrade21@gmail.com"
+  },
   "license": "AGPL-3.0",
   "repository": {
     "type": "git",
@@ -17,33 +21,32 @@
     "typescript"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "npm": "npm"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.171",
+    "@types/lodash": "^4.14.182",
     "@types/mkdirp": "^1.0.2",
-    "@types/node": "12.12.6",
-    "core-js": "3.6.5",
-    "electron": "11.2.0",
-    "electron-reload": "1.5.0",
-    "ts-node": "9.1.1",
+    "@types/node": "17.0.23",
+    "core-js": "^3.23.5",
+    "electron": "18.0.1",
+    "electron-reloader": "1.2.3",
+    "ts-node": "10.7.0",
     "tslib": "2.1.0",
-    "eslint": "7.20.0",
-    "eslint-plugin-import": "2.22.1",
-    "eslint-plugin-jsdoc": "31.6.1",
+    "eslint": "8.12.0",
+    "eslint-plugin-import": "2.25.4",
+    "eslint-plugin-jsdoc": "38.1.6",
     "eslint-plugin-prefer-arrow": "1.2.3",
-    "typescript": "4.0.5"
+    "typescript": "~4.5.5"
   },
   "dependencies": {
     "lodash": "^4.17.21",
     "mkdirp": "^1.0.4"
   },
   "engines": {
-    "node": ">=12.11.1"
+    "node": ">=14.20.0"
   },
   "browserslist": [
-    "chrome 83"
+    "chrome 100"
   ]
 }

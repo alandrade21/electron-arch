@@ -1,31 +1,51 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "outDir": "./dist/",
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "sourceMap": true,
-    "declaration": true,
+    /* Basic Options */
     "module": "commonjs",
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
-    "noEmitOnError": true,
+    "incremental": true,
     "target": "es5",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
+    "moduleResolution": "node",
     "lib": [
       "es2018",
       "es2017",
       "es2016",
       "es2015",
       "dom"
-    ]
+    ],
+    "declaration": true,
+    "sourceMap": true,
+    "outDir": "./dist/",
+    "importHelpers": true,
+    "noEmitOnError": true,
+
+    /* Strict Type-Checking Options */
+    "strict": true,
+    "alwaysStrict": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+
+    /* Additional Checks */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "allowJs": true,
+
+    /* Module Resolution Options */
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    
+    /* Experimental Options */
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
   },
-  "include": [
-    "src/**/*"
+  "files": [
+    "src/index.ts"
   ],
   "exclude": [
     "node_modules"

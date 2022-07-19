@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 André Andrade - alandrade21@gmail.com
+ * Copyright (c) 2022 André Andrade - alandrade21@gmail.com
  *
  * This file is part of the "electron-arch" library.
  *
@@ -37,7 +37,7 @@ export abstract class AppConfigurator <T extends ConfigData> {
   /* The json object with the specific app options. This is the content of the 
    * options file. 
    */
-  protected _appOptions: T;
+  protected _appOptions: T | undefined;
 
   // Absolute path to the folder holding config files.
   protected _configFolder: string;

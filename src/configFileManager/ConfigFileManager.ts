@@ -38,8 +38,8 @@ import { ConfigFileError } from './ConfigFileError';
  */
 export class ConfigFileManager<T extends ConfigData> {
 
-  private _fileName: string;
-  private _filePath: string;
+  private _fileName!: string;
+  private _filePath!: string;
 
   /**
    * This constructor uses the rules implemented on the setter methods to set 
@@ -70,7 +70,7 @@ export class ConfigFileManager<T extends ConfigData> {
     try {
       fs.accessSync(path.join(this.filePath, this.fileName), fs.constants.F_OK);
       return true;
-    } catch (error) {
+    } catch (error: any) {
       if (error.code === 'ENOENT') {
         return false;
       }
@@ -97,7 +97,7 @@ export class ConfigFileManager<T extends ConfigData> {
     try {
       rawData = fs.readFileSync(path.join(this.filePath, this.fileName), 
                                 {encoding: 'utf8'});
-    } catch (error) {
+    } catch (error: any) {
       const msg = 
         `An error occurred reading the configuration file ${path.join(this.filePath, this.fileName)}.`;
 
@@ -149,7 +149,7 @@ export class ConfigFileManager<T extends ConfigData> {
     // Create the directory in case it doesn't exist yet
     try {
       mkdirp.sync(this.filePath);
-    } catch (error) {
+    } catch (error: any) {
       throw new ConfigFileError(
         `It was not possible to create the directory ${this.filePath} for the config file.`, 
         error, (error.code ? error.code : null));
@@ -160,7 +160,7 @@ export class ConfigFileManager<T extends ConfigData> {
       fs.writeFileSync(path.join(this.filePath, this.fileName), 
       jsonData, 
       {encoding: 'utf8'});
-    } catch (error) {
+    } catch (error: any) {
       const msg = `An error occurred writing the configuration file ${path.join(this.filePath, this.fileName)}.`;
 
       if (error.code === 'EPERM') {

@@ -17,7 +17,7 @@
  * along with "electron-arch". If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { app } from 'electron';
+// import { app } from 'electron';
 import * as _ from 'lodash';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -28,8 +28,8 @@ import { DatabaseFileError } from './DatabaseFileError';
 
 export class DatabaseFileManager {
   
-  private _fileName: string;
-  private _filePath: string;
+  private _fileName!: string;
+  private _filePath!: string;
 
   /**
    * This constructor uses the rules implemented on the setter methods to set the received values.
@@ -58,7 +58,7 @@ export class DatabaseFileManager {
     try {
       fs.accessSync(path.join(this.filePath, this.fileName), fs.constants.F_OK);
       return true;
-    } catch (error) {
+    } catch (error: any) {
       if (error.code === 'ENOENT') {
         return false;
       }
@@ -83,7 +83,7 @@ export class DatabaseFileManager {
     try {
       fs.accessSync(path.join(skelFilePath, skelFileName), fs.constants.F_OK);
       return true;
-    } catch (error) {
+    } catch (error: any) {
       if (error.code === 'ENOENT') {
         return false;
       }
@@ -140,14 +140,14 @@ export class DatabaseFileManager {
     // Create the directory in case it doesn't exist yet
     try {
       mkdirp.sync(this.filePath);
-    } catch (error) {
+    } catch (error: any) {
       throw new DatabaseFileError(`It was not possible to create the directory ${this.filePath} for the database file.`, error, (error.code ? error.code : null));
     }
 
     try {
       fs.copyFileSync(path.join(skelFilePath, skelFileName), 
                       path.join(this.filePath, this.fileName), fs.constants.COPYFILE_EXCL);
-    } catch (error) {
+    } catch (error: any) {
       throw new DatabaseFileError(`An error occurred copying the skeleton database from ${path.join(skelFilePath, skelFileName)} to ${path.join(this.filePath, this.fileName)}.`, 
         error, (error.code ? error.code : null));
     }

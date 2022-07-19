@@ -24,7 +24,7 @@ import * as fs from 'fs';
 import { I18nInitOptions } from './I18nInitOptions';
 import { InvalidParameterError } from '../errors/InvalidParameterError';
 import { I18nError } from './I18nError';
-import { runInNewContext } from 'vm';
+// import { runInNewContext } from 'vm';
 
 /**
  * i18n engine.
@@ -35,7 +35,7 @@ class I18n {
   private _initialized: boolean = false;
 
   // Object used to initialize the component.
-  private _options: I18nInitOptions;
+  private _options!: I18nInitOptions;
 
   // List of language translations loaded.
   private _languagesLoaded: string[] = [];
@@ -44,13 +44,13 @@ class I18n {
   private _messagesLoaded: Map<string, Map<string, string>> = new Map();
 
   // Translations for the fallback language.
-  private _fallBackMessages: Map<string, string>;
+  private _fallBackMessages!: Map<string, string>;
 
   // Language in current use
   private _usingLanguage: string = 'en';
 
   // Messages for the language in current use.
-  private _usingMessages: Map<string, string>;
+  private _usingMessages!: Map<string, string>;
 
   /**
    * This method initializes the i18n engine, using an initialization object.
@@ -93,7 +93,7 @@ class I18n {
     try {
       fileList = fs.readdirSync(this._options.loadPath);
       console.log(fileList);
-    } catch (error) {
+    } catch (error: any) {
       const msg = `An error occurred reading the translation files from the directory ${this._options.loadPath}.`;
 
       if (error.code === 'ENOENT') {
@@ -127,7 +127,7 @@ class I18n {
       let rawData: string;
       try{
         rawData = fs.readFileSync(path.join(this._options.loadPath, fileName), {encoding: 'utf8'});
-      } catch (error) {
+      } catch (error: any) {
         const msg = `An error occurred reading the translation file ${path.join(this._options.loadPath, fileName)}.`;
 
         if (error.code === 'ENOENT') {

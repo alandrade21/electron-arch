@@ -18,7 +18,7 @@ import { InvalidParameterError } from './../errors/InvalidParameterError';
  * along with "electron-arch".  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { app, BrowserWindow, screen } from 'electron';
+import { app, BrowserWindow/*, screen*/ } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
@@ -74,6 +74,8 @@ export class MainWindowController {
       throw new InvalidParameterError('The pos parameter must be informed.');
     }
 
+    console.log(`Creating the browser window with the coordinates x:${pos.x}, y:${pos.y}, width:${pos.width}, height:${pos.height}.`);
+
     // Create the browser window.
     MainWindowController._mainWindow = new BrowserWindow({
       x: pos.x,
@@ -87,7 +89,7 @@ export class MainWindowController {
     });
 
     if (!app.isPackaged) {
-      console.log(process.cwd());
+      //console.log(process.cwd());
       require('electron-reload')(process.cwd(), {
         electron: require(`${process.cwd()}/node_modules/electron`)
       });
@@ -128,6 +130,8 @@ export class MainWindowController {
    * This methods should be called only after app.on('ready').
    */
   public static initialize(pos: MainWindowPosition): void {
+
+    console.log('Initializing main window.');
 
     if (!app.isReady()) {
       throw new AppNotReadyError();
