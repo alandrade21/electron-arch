@@ -71,7 +71,7 @@ export abstract class AppConfigurator <T extends ConfigData> {
    * .local/share/<<appName>>/ directory inside the actual OS user's home folder.
    *
    * If the environment is not development and the OS is macOS, the config and 
-   * data folders are set to the Library/Application Support/<<aapName>>/ 
+   * data folders are set to the "Library/Application Support/<<aapName>>/" 
    * directory inside the actual OS user's home folder.
    *
    * This constructor uses this information to configure a ConfigFileManager.
