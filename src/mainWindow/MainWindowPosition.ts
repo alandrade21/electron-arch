@@ -18,6 +18,7 @@
 */
 
 import { screen } from 'electron';
+import { InvalidParameterError } from '../errors/InvalidParameterError';
 
 /**
  * Class to represent the position and size of the electron main window.
@@ -31,27 +32,64 @@ import { screen } from 'electron';
  */
 export class MainWindowPosition {
 
-  // TODO testar comportamento com valores negativos e fracionários.
-  public x: number;
-  public y: number;
-  public width: number;
-  public height: number;
+  private _x: number;
+  private _y: number;
+  private _width: number;
+  private _height: number;
 
-  constructor(x: number,
-              y: number,
-              width: number,
-              height: number) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
+  constructor(
+    x: number,
+    y: number,
+    width: number,
+    height: number
+  ) {
+    if (x < 0 || y < 0 || width < 0 || height < 0 ||
+      !Number.isInteger(x) || !Number.isInteger(y) ||
+      !Number.isInteger(width) || !Number.isInteger(height)
+    ) {
+      throw new InvalidParameterError('All the parameters must be ' +
+        'positive integers.');
+    }
+
+    this._x = x;
+    this._y = y;
+    this._width = width;
+    this._height = height;
   }
 
+  /**
+   * Static helper to get the coordinates for a maximized window in the
+   * display where the mouse pointer is.
+   * 
+   * @returns a MainWindowPosition instance with coordinates to maximize a 
+   * window in the display where the mouse pointer is.
+   */
   public static getMaximizedInstance(): MainWindowPosition {
-    const size = screen.getPrimaryDisplay().workAreaSize;
-    return new MainWindowPosition(0,0, size.width, size.height);
+    const displayPointed = screen.getDisplayNearestPoint(
+      screen.getCursorScreenPoint());
+    //const size = screen.getPrimaryDisplay().workAreaSize;
+    const wa = displayPointed.workArea;
+    return new MainWindowPosition(wa.x, wa.y, wa.width, wa.height);
   }
 
   // TODO criar método de instanciação centralizando a janela no display padrão.
   // TODO tratar mais de um display.
+
+  ////////////////////////////////////////////////////
+
+  public getX() {
+    return this._x;
+  }
+
+  public getY() {
+    return this._y;
+  }
+
+  public getWidth() {
+    return this._width
+  }
+
+  public getHeight() {
+    return this._height
+  }
 }
