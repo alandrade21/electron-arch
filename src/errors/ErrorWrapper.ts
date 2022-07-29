@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 André Andrade - alandrade21@gmail.com
+ * Copyright (c) 2022 André Andrade - alandrade21@gmail.com
  * 
  * This file is part of the "electron-arch" library.
  *
@@ -23,7 +23,8 @@
  *
  * Create your own inheriting this class.
  * 
- * @since 0.0.1
+ * @author alandrade21
+ * @since 0.0.1, 2019 feb 07
  */
 export abstract class ErrorWrapper {
 
@@ -32,7 +33,7 @@ export abstract class ErrorWrapper {
    * child class name. The name of a class cannot be obtained in runtime
    * because of a possible minification that alters the class name.
    * 
-   * @since 0.0.1
+   * @since 0.0.1, 2019 feb 07
    */
   protected _className = '';
 
@@ -44,7 +45,8 @@ export abstract class ErrorWrapper {
    * @param _classifier Optional. A string that classifies this error. Generally, 
    * this field is overridden in subclasses.
    * 
-   * @since 0.0.1
+   * @author alandrade21
+   * @since 0.0.1, 2019 feb 07
    */
   constructor(protected _message: string,
               protected _causedBy: Error | any | null = null,
@@ -69,7 +71,8 @@ export abstract class ErrorWrapper {
   /**
    * Method to console print an error of this type, identifying the type.
    * 
-   * @since 0.0.1
+   * @author alandrade21
+   * @since 0.0.1, 2019 feb 07
    */
   public consoleLog(): void {
     console.log(`${this.className}. Message: ${this.message}. Error Type: ${this.classifier}. Original Error: ${this.causedBy}`);

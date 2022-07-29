@@ -17,7 +17,8 @@
 * along with "electron-arch". If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { screen } from 'electron';
+import { app, screen } from 'electron';
+import { AppNotReadyError } from '../errors/AppNotReadyError';
 import { InvalidParameterError } from '../errors/InvalidParameterError';
 
 /**
@@ -28,6 +29,7 @@ import { InvalidParameterError } from '../errors/InvalidParameterError';
  * Helper class with static methods to obtain an instance for a maximized or 
  * centralized window.
  * 
+ * @author alandrade21
  * @since 0.0.1
  */
 export class MainWindowPosition {
@@ -37,6 +39,10 @@ export class MainWindowPosition {
   private _width: number;
   private _height: number;
 
+  /**
+   * @author alandrade21
+   * @since 0.0.1
+   */
   constructor(
     x: number,
     y: number,
@@ -63,8 +69,16 @@ export class MainWindowPosition {
    * 
    * @returns a MainWindowPosition instance with coordinates to maximize a 
    * window in the display where the mouse pointer is.
+   * @throws AppNotReadyError if app.on('ready') event not occurred yet.
+   * 
+   * @author alandrade21
+   * @since 0.0.1
    */
   public static getMaximizedInstance(): MainWindowPosition {
+    if (!app.isReady()) {
+      throw new AppNotReadyError();
+    }
+
     const displayPointed = screen.getDisplayNearestPoint(
       screen.getCursorScreenPoint());
     //const size = screen.getPrimaryDisplay().workAreaSize;
@@ -77,18 +91,34 @@ export class MainWindowPosition {
 
   ////////////////////////////////////////////////////
 
+  /**
+   * @author alandrade21
+   * @since 0.0.1
+   */
   public getX() {
     return this._x;
   }
 
+  /**
+   * @author alandrade21
+   * @since 0.0.1
+   */
   public getY() {
     return this._y;
   }
 
+  /**
+   * @author alandrade21
+   * @since 0.0.1
+   */
   public getWidth() {
     return this._width
   }
 
+  /**
+   * @author alandrade21
+   * @since 0.0.1
+   */
   public getHeight() {
     return this._height
   }

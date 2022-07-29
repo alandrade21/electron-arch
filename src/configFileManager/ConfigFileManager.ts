@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 André Andrade - alandrade21@gmail.com
+ * Copyright (c) 2022 André Andrade - alandrade21@gmail.com
  *
  * This file is part of the "electron-arch" library.
  *
@@ -23,7 +23,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as mkdirp from 'mkdirp';
 
-import { ConfigData } from '../appConfigurator/ConfigData';
+import { ConfigData } from '../appConfigurator/ConfigData.interface';
 import { InvalidParameterError } from './../errors/InvalidParameterError';
 import { ConfigFileError } from './ConfigFileError';
 
@@ -34,7 +34,8 @@ import { ConfigFileError } from './ConfigFileError';
  * It was created based on the work of Juan Cruz Viotti on electron-json-storage 
  * project (https://github.com/electron-userland/electron-json-storage).
  * 
- * @since 0.0.1
+ * @author alandrade21
+ * @since 0.0.1, 2019 feb 08
  */
 export class ConfigFileManager<T extends ConfigData> {
 
@@ -52,6 +53,9 @@ export class ConfigFileManager<T extends ConfigData> {
    * @throws InvalidParameterError if the fileName or filePath is empty.
    * @throws ConfigFileError if the fileName is malformed or the filePath is 
    * not an absolute path.
+   * 
+   * @author alandrade21
+   * @since 0.0.1, 2019 feb 08
    */
   constructor(
     fileName: string,
@@ -65,6 +69,9 @@ export class ConfigFileManager<T extends ConfigData> {
    * Verifies if the config file identified by _filePath/_fileName exists on disk.
    *
    * @throws ConfigFileError in case of any error different from ENOENT.
+   * 
+   * @author alandrade21
+   * @since 0.0.1, 2019 feb 08
    */
   public fileExist(): boolean {
     try {
@@ -91,6 +98,9 @@ export class ConfigFileManager<T extends ConfigData> {
    * representing the configuration options.
    *
    * @throws ConfigFileError if the is any problem reading the file.
+   * 
+   * @author alandrade21
+   * @since 0.0.1, 2019 feb 08
    */
   public readFile(): T {
     let rawData: string;
@@ -135,6 +145,9 @@ export class ConfigFileManager<T extends ConfigData> {
    *
    * @throws InvalidParameterError if the data was not informed.
    * @throws ConfigFileError In case of file system errors.
+   * 
+   * @author alandrade21
+   * @since 0.0.1, 2019 feb 08
    */
   public writeFile(data: T): void {
     if (_.isEmpty(data)) {
@@ -193,6 +206,9 @@ export class ConfigFileManager<T extends ConfigData> {
    *
    * @throws InvalidParameterError if the filename is empty.
    * @throws ConfigFileError if the filename is malformed.
+   * 
+   * @author alandrade21
+   * @since 0.0.1, 2019 feb 08
    */
   private setFileName(fileName: string): void {
     if (_.isEmpty(fileName)) {
@@ -224,6 +240,9 @@ export class ConfigFileManager<T extends ConfigData> {
    *
    * @throws InvalidParameterError if the filePath is empty.
    * @throws ConfigFileError if the filePath is not an absolute path.
+   * 
+   * @author alandrade21
+   * @since 0.0.1, 2019 feb 08
    */
   private setFilePath(filePath: string): void {
     if (_.isEmpty(filePath)) {

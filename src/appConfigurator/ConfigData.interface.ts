@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 André Andrade - alandrade21@gmail.com
+ * Copyright (c) 2022 André Andrade - alandrade21@gmail.com
  * 
  * This file is part of the "electron-arch" library.
  *
@@ -22,7 +22,8 @@
  * 
  * It is used, by means of type safety, in the ConfigFileManager.
  * 
- * @since 0.0.1
+ * @author alandrade21
+ * @since 0.0.1, 2019 feb 07
  */
 export interface ConfigData {
   

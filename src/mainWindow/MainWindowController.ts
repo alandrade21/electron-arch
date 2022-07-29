@@ -1,6 +1,6 @@
 import { InvalidParameterError } from './../errors/InvalidParameterError';
 /*
- * Copyright (c) 2021 André Andrade - alandrade21@gmail.com
+ * Copyright (c) 2022 André Andrade - alandrade21@gmail.com
  * 
  * This file is part of the "electron-arch" library.
  *
@@ -35,7 +35,8 @@ import { MainWindowPosition } from './MainWindowPosition';
  * Implementation based on 
  * https://medium.com/@davembush/typescript-and-electron-the-right-way-141c2e15e4e1.
  * 
- * @since 0.0.1
+ * @author alandrade21
+ * @since 0.0.1, 2019 mar 27
  */
 export class MainWindowController {
 
@@ -50,7 +51,8 @@ export class MainWindowController {
    * @throws MainWindowNotInitializedError If the main window were not 
    * initialized.
    * 
-   * @since 0.0.1
+   * @author alandrade21
+   * @since 0.0.1, 2019 mar 27
    */
   public static get mainWindow(): BrowserWindow {
     if (!MainWindowController._mainWindow) {
@@ -60,12 +62,90 @@ export class MainWindowController {
   }
 
   /**
+   * Initializes a skeleton browser window to serve as main window.
+   * 
+   * This window is hide, empty, with all defaults and with node integration
+   * turned on.
+   * 
+   * @throws AppNotReadyError if this method is called before appReady event.
+   * @throws MainWindowAlreadyInitializedError if this method is called after
+   * the main windows was initialized. Probably a duplicated call.
+   * 
+   * @author alandrade21
+   * @since 0.0.1, 2022 jul 29
+   */
+  public static initialize(): void {
+    console.log('Initializing main window.');
+
+    if (!app.isReady()) {
+      throw new AppNotReadyError();
+    }
+
+    if (MainWindowController._mainWindow) {
+      throw new MainWindowAlreadyInitializedError();
+    }
+
+    // Create the browser window.
+    MainWindowController._mainWindow = new BrowserWindow({
+      webPreferences: {
+        nodeIntegration: true,
+      },
+      show: false
+    });
+  }
+
+  /**
+   * Method to control main window initialization.
+   *
+   * This methods should be called only after app.on('ready').
+   * 
+   * @author alandrade21
+   * @since 0.0.1
+   */
+   private static initializeOld(pos: MainWindowPosition): void {
+
+    
+
+    
+
+    
+
+    try {
+
+      MainWindowController.createWindow(pos);
+
+      // Quit when all windows are closed.
+      app.on('window-all-closed', () => {
+        // On OS X it is common for applications and their menu bar
+        // to stay active until the user quits explicitly with Cmd + Q
+        if (process.platform !== 'darwin') {
+          app.quit();
+        }
+      });
+
+      // TODO testar como OSX se comporta sem isso.
+      // TODO mover isso para o cliente?
+      // app.on('activate', () => {
+      //   // On OS X it's common to re-create a window in the app when the
+      //   // dock icon is clicked and there are no other windows open.
+      //   if (!MainWindowController._mainWindow) {
+      //     MainWindowController.createWindow();
+      //   }
+      // });
+    } catch (e) {
+      throw new UnexpectedError(
+        'Unexpected error during main window initialization', e);
+    }
+  }
+
+  /**
    * Initializes the main window.
    * 
    * @param pos Object containing the position and size of the new window.
    * 
    * @throws InvalidParameterError if the pos parameter is null.
    * 
+   * @author alandrade21
    * @since 0.0.1
    */
   private static createWindow(pos: MainWindowPosition): void {
@@ -74,14 +154,14 @@ export class MainWindowController {
       throw new InvalidParameterError('The pos parameter must be informed.');
     }
 
-    console.log(`Creating the browser window with the coordinates x:${pos.x}, y:${pos.y}, width:${pos.width}, height:${pos.height}.`);
+    console.log(`Creating the browser window with the coordinates x:${pos.getX()}, y:${pos.getY()}, width:${pos.getWidth()}, height:${pos.getHeight()}.`);
 
     // Create the browser window.
     MainWindowController._mainWindow = new BrowserWindow({
-      x: pos.x,
-      y: pos.y,
-      width: pos.width,
-      height: pos.height,
+      x: pos.getX(),
+      y: pos.getY(),
+      width: pos.getWidth(),
+      height: pos.getHeight(),
       webPreferences: {
         nodeIntegration: true,
       },
@@ -122,50 +202,5 @@ export class MainWindowController {
       // when you should delete the corresponding element.
       this._mainWindow = null;
     });
-  }
-
-  /**
-   * Method to control main window initialization.
-   *
-   * This methods should be called only after app.on('ready').
-   */
-  public static initialize(pos: MainWindowPosition): void {
-
-    console.log('Initializing main window.');
-
-    if (!app.isReady()) {
-      throw new AppNotReadyError();
-    }
-
-    if (MainWindowController._mainWindow) {
-      throw new MainWindowAlreadyInitializedError();
-    }
-
-    try {
-
-      MainWindowController.createWindow(pos);
-
-      // Quit when all windows are closed.
-      app.on('window-all-closed', () => {
-        // On OS X it is common for applications and their menu bar
-        // to stay active until the user quits explicitly with Cmd + Q
-        if (process.platform !== 'darwin') {
-          app.quit();
-        }
-      });
-
-      // TODO testar como OSX se comporta sem isso.
-      // TODO mover isso para o cliente?
-      // app.on('activate', () => {
-      //   // On OS X it's common to re-create a window in the app when the
-      //   // dock icon is clicked and there are no other windows open.
-      //   if (!MainWindowController._mainWindow) {
-      //     MainWindowController.createWindow();
-      //   }
-      // });
-    } catch (e) {
-      throw new UnexpectedError(
-        'Unexpected error during main window initialization', e);
-    }
   }
 }

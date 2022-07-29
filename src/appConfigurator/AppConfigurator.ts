@@ -1,3 +1,4 @@
+import { MainWindowController } from './../mainWindow/MainWindowController';
 /*
  * Copyright (c) 2022 André Andrade - alandrade21@gmail.com
  *
@@ -18,21 +19,32 @@
  */
 
 import { app } from 'electron';
-
+import { AppConfigParams } from './AppConfigParams.interface';
 import { ConfigFileManager } from './../configFileManager/ConfigFileManager';
-import { ConfigData } from './ConfigData';
+import { ConfigData } from './ConfigData.interface';
 import { InvalidParameterError } from '../errors/InvalidParameterError';
 import { InvalidPlatformError } from './InvalidPlatformError';
+import _ from 'lodash';
 
 /**
- * Super class, with basic functionalities, for app configuration classes.
+ * Super class, with the default init behavior.
  * 
- * @since 0.0.1
+ * Your app should provide a child class, and should, as soon as possible, after 
+ * the onReady event, instantiate it and call the doConfig() method.
+ * 
+ * To define your child class you'll need a class representing your app's config
+ * file, that is a class implementing the ConfigData interface.
+ * 
+ * The default init behavior is implemented in the doConfig() method. To override 
+ * this default behavior, simply override doConfig(). 
+ * 
+ * @author alandrade21
+ * @since 0.0.1, 2019 jul 02
  */
 export abstract class AppConfigurator <T extends ConfigData> {
 
   // ConfigFileManager created for the client app specific config file.
-  protected _cfm: ConfigFileManager<T>;
+  protected _cfm: ConfigFileManager<T> | null = null;
 
   /* The json object with the specific app options. This is the content of the 
    * options file. 
@@ -45,6 +57,8 @@ export abstract class AppConfigurator <T extends ConfigData> {
   // Absolute path to the folder holding data files.
   protected _dataFolder: string;
 
+  protected appConfigParams: AppConfigParams;
+
   /**
    * This constructor verifies which is the user's OS, and choses the config and 
    * data folders accordingly.
@@ -54,94 +68,119 @@ export abstract class AppConfigurator <T extends ConfigData> {
    * and devDataFolderPath parameters.
    * 
    * This is made to allow a "production" version to run in the same 
-   * machine used to development, preserving the production database and 
+   * machine used to development, preserving the production data and 
    * configuration files.
    * 
    * As said, the environment is identified as development if app.isPackaged 
    * return false.
    *
-   * If the environment is not development and the OS is windows, the config 
-   * folder is set to the .config directory inside the app installation folder, 
-   * and the data folder is set to the .data directory inside the app installation 
-   * folder.
+   * If the environment is not development and the prodConfigFolderPath / 
+   * prodDataFolderPath are not present (or has no data) and the OS is windows, 
+   * the config folder is set to the .config directory inside the app 
+   * installation folder, and the data folder is set to the .data directory 
+   * inside the app installation folder.
    *
-   * If the environment is not development and the OS is Linux, the config
-   * folder is set to the .config/<<appName>>/ directory inside the actual OS 
-   * user's home folder, and the data folder is set to the 
+   * If the environment is not development and the prodConfigFolderPath / 
+   * prodDataFolderPath are not present (or has no data) and the OS is Linux, 
+   * the config folder is set to the .config/<<appName>>/ directory inside 
+   * the actual OS user's home folder, and the data folder is set to the 
    * .local/share/<<appName>>/ directory inside the actual OS user's home folder.
    *
-   * If the environment is not development and the OS is macOS, the config and 
-   * data folders are set to the "Library/Application Support/<<aapName>>/" 
-   * directory inside the actual OS user's home folder.
+   * If the environment is not development and the prodConfigFolderPath / 
+   * prodDataFolderPath are not present (or has no data) and the OS is macOS, 
+   * the config and data folders are set to the 
+   * "Library/Application Support/<<aapName>>/" directory inside the actual OS 
+   * user's home folder.
    *
-   * This constructor uses this information to configure a ConfigFileManager.
+   * This information will be used by other specialized components during the
+   * doConfig.
    *
-   * @param appName Name of the app being configured. This name will be used to 
-   * create a folder structure to host the configuration file.
+   * @param appConfigParams Object with the data needed to initialize the app.
    *
-   * @param devConfigFolderPath Absolute path to the development data folder 
-   * structure. This structure is a copy of the system folders that will be used 
-   * during production. For more info, see 
-   * https://github.com/alandrade21/devTestFolders.
-   *
-   * @param devDataFolderPath Absolute path to the development data folder 
-   * structure. This structure is a copy of the system folders that will be used 
-   * during production. For more info, see
-   * https://github.com/alandrade21/devTestFolders.
-   *
-   * @param configFileName Name of the configuration file to be used. This file 
-   * will have the .json extension.
-   *
-   * @throws InvalidParameterError if the appName, devConfigFolderPath or 
-   * devDataFolderPath is empty.
+   * @throws InvalidParameterError if the appConfigParams is empty, or any of the
+   * following appConfigParams field are empty: appName, devConfigFolderPath, 
+   * devDataFolderPath.
    * @throws InvalidPlatformError if the platform running the app were nor win32, 
    * linux or darwin.
    * @throws ConfigFileError if the configFileName is malformed.
    * 
-   * @since 0.0.1
+   * @author alandrade21
+   * @since 0.0.1, 2019 feb 07
    */
-  constructor(appName: string, 
-              devConfigFolderPath: string, 
-              devDataFolderPath: string,
-              configFileName: string = 'config') {
+  constructor(appConfigParams: AppConfigParams) {
 
-    if (!appName) {
-      throw new InvalidParameterError('The appName parameter must be informed');
+    if(!appConfigParams) {
+      throw new InvalidParameterError('The appConfigParams must be informed.');
     }
 
-    if (!devConfigFolderPath) {
-      throw new InvalidParameterError('The devConfigFolderPath parameter must be informed');
+    if (!appConfigParams.appName) {
+      throw new InvalidParameterError('The appConfigParams.appName must be informed');
     }
 
-    if (!devDataFolderPath) {
-      throw new InvalidParameterError('The devDataFolderPath parameter must be informed');
+    if (!appConfigParams.devConfigFolderPath) {
+      throw new InvalidParameterError('The appConfigParams.devConfigFolderPath must be informed');
     }
 
-    if (app.isPackaged) {
-      if (process.platform === 'win32') {
-        this._configFolder = `${process.cwd()}/.config`;
-        this._dataFolder = `${process.cwd()}/.data`;
-      } else if (process.platform === 'darwin' || process.platform === 'linux'){
-        this._configFolder = `${app.getPath('appData')}/${appName}`;
+    if (!appConfigParams.devDataFolderPath) {
+      throw new InvalidParameterError('The appConfigParams.devDataFolderPath must be informed');
+    }
 
-        if (process.platform === 'darwin') { // mac os
-          this._dataFolder = `${app.getPath('appData')}/${appName}`;
-        } else { // linux
-          this._dataFolder = `${app.getPath('home')}/.local/share/${appName}`;
-        }
+    if (app.isPackaged) { //Prod
+
+      if(appConfigParams.prodConfigFolderPath && 
+         !_.isEmpty(appConfigParams.prodConfigFolderPath))
+      {
+        this._configFolder = appConfigParams.prodConfigFolderPath;
       } else {
-        throw new InvalidPlatformError();
+        if (process.platform === 'win32') {      
+          this._configFolder = `${process.cwd()}/.config`;
+        } else if (process.platform === 'darwin' || process.platform === 'linux'){
+          this._configFolder = 
+            `${app.getPath('appData')}/${appConfigParams.appName}`;
+        } else {
+          throw new InvalidPlatformError();
+        }
       }
-    } else {
-      this._configFolder = devConfigFolderPath;
-      this._dataFolder = devDataFolderPath;
+
+      if(appConfigParams.prodDataFolderPath && 
+        !_.isEmpty(appConfigParams.prodDataFolderPath))
+      {
+       this._dataFolder = appConfigParams.prodDataFolderPath;
+      } else {
+        if (process.platform === 'win32') {
+          this._dataFolder = `${process.cwd()}/.data`;
+        } else if (process.platform === 'darwin') { 
+          this._dataFolder = 
+            `${app.getPath('appData')}/${appConfigParams.appName}`;
+        } else if (process.platform === 'linux') { 
+          this._dataFolder = 
+            `${app.getPath('home')}/.local/share/${appConfigParams.appName}`;
+        } else {
+          throw new InvalidPlatformError();
+        }
+      }
+    } else { // Dev
+      this._configFolder = appConfigParams.devConfigFolderPath;
+      this._dataFolder = appConfigParams.devDataFolderPath;
     }
 
-    this._cfm = new ConfigFileManager<T>(configFileName, this._configFolder);
+    this.appConfigParams = appConfigParams;
   }
 
   /**
    * Method to start the app configuration.
+   * 
+   * This class make a default config. You can complete override this default
+   * behavior simply overriding this method in your child class, or you can
+   * extend it, overriding this method and calling it (super()) inside your
+   * method.
+   * 
+   * The default behavior is as follows:
+   * 
+   * Initializes a skeleton, hidden, main window with the only purpose to show 
+   * initialization errors on pop ups. Before this point, all error were
+   * outputted to the console. This is a UX step. The true main window 
+   * initialization will happen later. 
    *
    * This super class execute the existence check of the config file. If it 
    * do exist, the file is read and the options object is initialized. If it 
@@ -151,28 +190,33 @@ export abstract class AppConfigurator <T extends ConfigData> {
    *
    * @throws ConfigFileError in case of error interacting with the config file.
    * 
-   * @since 0.0.1
+   * @author alandrade21
+   * @since 0.0.1, 2019 feb 07
    */
   public doConfig(): void {
+
+    MainWindowController.initialize();
+
+    /*
+     * Instantiate the ConfigFileManager
+     */
+    let configFileName: string = 'config';
+
+    if (this.appConfigParams.configFileName && 
+        !_.isEmpty(this.appConfigParams.configFileName)) 
+    {
+      configFileName = this.appConfigParams.configFileName;
+    }
+
+    this._cfm = new ConfigFileManager<T>(configFileName, this._configFolder);
 
     let hasFile: boolean = this._cfm.fileExist();
 
     if (hasFile) {
-      this.readConfigFile();
+      this._appOptions = this._cfm.readFile();
     } else {
       this.createConfigFile();
     }
-  }
-
-  /**
-   * Reads the config file.
-   *
-   * @throws ConfigFileError in case of error interacting with the config file.
-   * 
-   * @since 0.0.1
-   */
-  private readConfigFile(): void {
-    this._appOptions = this._cfm.readFile();
   }
 
   /**
@@ -182,6 +226,6 @@ export abstract class AppConfigurator <T extends ConfigData> {
    * 
    * @since 0.0.1
    */
-  protected abstract createConfigFile(): void;
+  protected abstract createConfigFile(configFile: T): void;
 
 }

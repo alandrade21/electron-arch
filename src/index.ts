@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 André Andrade - alandrade21@gmail.com
+ * Copyright (c) 2022 André Andrade - alandrade21@gmail.com
  *
  * This file is part of the "electron-arch" library.
  *
@@ -18,7 +18,8 @@
  */
 
 export * from './appConfigurator/AppConfigurator';
-export * from './appConfigurator/ConfigData';
+export * from './appConfigurator/ConfigData.interface';
+export * from './appConfigurator/AppConfigParams.interface';
 export * from './appConfigurator/InvalidPlatformError';
 
 export * from './configFileManager/ConfigFileManager';

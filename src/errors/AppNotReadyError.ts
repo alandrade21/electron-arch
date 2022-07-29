@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2021 André Andrade - alandrade21@gmail.com
+* Copyright (c) 2022 André Andrade - alandrade21@gmail.com
 *
 * This file is part of the "electron-arch" library.
 *
@@ -23,7 +23,8 @@ import { ErrorWrapper } from './ErrorWrapper';
  * Error class to represent a state where the app.on('ready') event was not fired
  * yet.
  * 
- * @since 0.0.1
+ * @author alandrade21
+ * @since 0.0.1, 2021 aug 02
  */
 export class AppNotReadyError extends ErrorWrapper{
 
@@ -36,5 +37,4 @@ export class AppNotReadyError extends ErrorWrapper{
   constructor(){
     super('The app.on(\'ready\') event was not fired yet.');
   }
-
 }
